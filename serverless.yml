@@ -1,0 +1,370 @@
+service: snapit-forum-api
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  stage: ${opt:stage, 'prod'}
+
+  environment:
+    FORUMS_TABLE: ${self:service}-forums-${self:provider.stage}
+    USERS_TABLE: ${self:service}-users-${self:provider.stage}
+    FORUM_MEMBERS_TABLE: ${self:service}-forum-members-${self:provider.stage}
+    CATEGORIES_TABLE: ${self:service}-categories-${self:provider.stage}
+    THREADS_TABLE: ${self:service}-threads-${self:provider.stage}
+    POSTS_TABLE: ${self:service}-posts-${self:provider.stage}
+    MESSAGES_TABLE: ${self:service}-messages-${self:provider.stage}
+    GOOGLE_CLIENT_ID: ${env:GOOGLE_CLIENT_ID}
+    JWT_SECRET: ${env:JWT_SECRET}
+    STRIPE_SECRET_KEY: ${env:STRIPE_SECRET_KEY}
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:BatchGetItem
+            - dynamodb:BatchWriteItem
+          Resource:
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.FORUMS_TABLE}"
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.USERS_TABLE}"
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.FORUM_MEMBERS_TABLE}"
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CATEGORIES_TABLE}"
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.THREADS_TABLE}"
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.POSTS_TABLE}"
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.MESSAGES_TABLE}"
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.THREADS_TABLE}/index/*"
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.POSTS_TABLE}/index/*"
+
+functions:
+  # Auth
+  googleAuth:
+    handler: src/handlers/auth.googleCallback
+    events:
+      - http:
+          path: auth/google/callback
+          method: get
+          cors: true
+
+  refreshToken:
+    handler: src/handlers/auth.refreshToken
+    events:
+      - http:
+          path: auth/refresh
+          method: post
+          cors: true
+
+  # Forums
+  getForums:
+    handler: src/handlers/forums.list
+    events:
+      - http:
+          path: forums
+          method: get
+          cors: true
+
+  createForum:
+    handler: src/handlers/forums.create
+    events:
+      - http:
+          path: forums
+          method: post
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 300
+
+  getForum:
+    handler: src/handlers/forums.get
+    events:
+      - http:
+          path: forums/{forumId}
+          method: get
+          cors: true
+
+  # Categories
+  getCategories:
+    handler: src/handlers/categories.list
+    events:
+      - http:
+          path: forums/{forumId}/categories
+          method: get
+          cors: true
+
+  createCategory:
+    handler: src/handlers/categories.create
+    events:
+      - http:
+          path: forums/{forumId}/categories
+          method: post
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 300
+
+  # Threads
+  getThreads:
+    handler: src/handlers/threads.list
+    events:
+      - http:
+          path: forums/{forumId}/categories/{categoryId}/threads
+          method: get
+          cors: true
+
+  createThread:
+    handler: src/handlers/threads.create
+    events:
+      - http:
+          path: forums/{forumId}/categories/{categoryId}/threads
+          method: post
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 300
+
+  getThread:
+    handler: src/handlers/threads.get
+    events:
+      - http:
+          path: forums/{forumId}/threads/{threadId}
+          method: get
+          cors: true
+
+  # Posts
+  getPosts:
+    handler: src/handlers/posts.list
+    events:
+      - http:
+          path: forums/{forumId}/threads/{threadId}/posts
+          method: get
+          cors: true
+
+  createPost:
+    handler: src/handlers/posts.create
+    events:
+      - http:
+          path: forums/{forumId}/threads/{threadId}/posts
+          method: post
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 300
+
+  # Messages (PGP encrypted)
+  getMessages:
+    handler: src/handlers/messages.list
+    events:
+      - http:
+          path: messages
+          method: get
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 300
+
+  sendMessage:
+    handler: src/handlers/messages.send
+    events:
+      - http:
+          path: messages
+          method: post
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 300
+
+  # User
+  getUser:
+    handler: src/handlers/users.get
+    events:
+      - http:
+          path: users/{userId}
+          method: get
+          cors: true
+
+  updateUser:
+    handler: src/handlers/users.update
+    events:
+      - http:
+          path: users/me
+          method: put
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 300
+
+  # Authorizer
+  authorizer:
+    handler: src/handlers/auth.authorizer
+
+  # Stripe Webhooks
+  stripeWebhook:
+    handler: src/handlers/stripe.webhook
+    events:
+      - http:
+          path: webhooks/stripe
+          method: post
+
+resources:
+  Resources:
+    # Forums Table
+    ForumsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.FORUMS_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: forumId
+            AttributeType: S
+          - AttributeName: ownerUserId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: forumId
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: OwnerIndex
+            KeySchema:
+              - AttributeName: ownerUserId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
+    # Users Table
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.USERS_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: EmailIndex
+            KeySchema:
+              - AttributeName: email
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
+    # Forum Members Table
+    ForumMembersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.FORUM_MEMBERS_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: forumIdUserId
+            AttributeType: S
+          - AttributeName: joinedAt
+            AttributeType: N
+          - AttributeName: forumId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: forumIdUserId
+            KeyType: HASH
+          - AttributeName: joinedAt
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: ForumIndex
+            KeySchema:
+              - AttributeName: forumId
+                KeyType: HASH
+              - AttributeName: joinedAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+
+    # Categories Table
+    CategoriesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.CATEGORIES_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: forumIdCategoryId
+            AttributeType: S
+          - AttributeName: position
+            AttributeType: N
+        KeySchema:
+          - AttributeName: forumIdCategoryId
+            KeyType: HASH
+          - AttributeName: position
+            KeyType: RANGE
+
+    # Threads Table
+    ThreadsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.THREADS_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: forumIdThreadId
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: N
+          - AttributeName: forumIdCategoryId
+            AttributeType: S
+          - AttributeName: lastPostAt
+            AttributeType: N
+        KeySchema:
+          - AttributeName: forumIdThreadId
+            KeyType: HASH
+          - AttributeName: createdAt
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: CategoryIndex
+            KeySchema:
+              - AttributeName: forumIdCategoryId
+                KeyType: HASH
+              - AttributeName: lastPostAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+
+    # Posts Table
+    PostsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.POSTS_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: threadIdPostId
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: N
+        KeySchema:
+          - AttributeName: threadIdPostId
+            KeyType: HASH
+          - AttributeName: createdAt
+            KeyType: RANGE
+
+    # Messages Table (PGP encrypted)
+    MessagesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.MESSAGES_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: conversationId
+            AttributeType: S
+          - AttributeName: timestamp
+            AttributeType: N
+        KeySchema:
+          - AttributeName: conversationId
+            KeyType: HASH
+          - AttributeName: timestamp
+            KeyType: RANGE
+
+plugins:
+  - serverless-offline

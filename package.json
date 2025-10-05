@@ -1,0 +1,27 @@
+{
+  "name": "snapit-forum-api",
+  "version": "1.0.0",
+  "description": "SnapIT Forum - Ultra-fast multi-tenant forum platform with PGP messaging",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "serverless deploy",
+    "deploy:prod": "serverless deploy --stage prod",
+    "local": "serverless offline",
+    "test": "jest"
+  },
+  "keywords": ["forum", "serverless", "pgp", "multi-tenant"],
+  "author": "SnapIT Software",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.1691.0",
+    "jsonwebtoken": "^9.0.2",
+    "google-auth-library": "^9.14.1",
+    "stripe": "^14.12.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "serverless": "^3.38.0",
+    "serverless-offline": "^13.3.3",
+    "jest": "^29.7.0"
+  }
+}

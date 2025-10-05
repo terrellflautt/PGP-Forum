@@ -1,0 +1,10 @@
+node_modules/
+.env
+.env.*
+.serverless/
+*.log
+.DS_Store
+.idea/
+.vscode/
+dist/
+.aws-sam/
