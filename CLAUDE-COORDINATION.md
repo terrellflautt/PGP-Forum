@@ -1,6 +1,6 @@
 # 🤖 Claude Instance Coordination
 
-**Last Updated**: October 5, 2025 21:20 UTC (Instance #3 - Production Audit Complete)
+**Last Updated**: October 5, 2025 23:00 UTC (Instance #5 - Code Polish + Landing Page Feature Enhancement)
 **Project**: SnapIT Forum - Zero-Knowledge Privacy Platform
 
 ---
@@ -203,7 +203,45 @@ curl -I https://api.snapitsoftware.com/forums
 
 ## 📝 Notes for Other Claude Instance
 
-### What Instance #3 Just Did (Production Audit)
+### What Instance #5 Just Did (Code Polish + Landing Page Feature Showcase) - Current Session
+1. ✅ **Eliminated All Build Warnings** - Fixed 8 ESLint/TypeScript warnings
+   - Removed unused imports (BRAND_CONFIG, MessengerView)
+   - Removed unused variables (scrolled, isEmailVerified)
+   - Fixed React Hook dependency warnings in 3 components
+   - Refactored LoginModal to avoid function duplication
+   - Clean build: 0 warnings, 88.04 KB gzipped
+2. ✅ **Enhanced Landing Page** - Added prominent Core Features section
+   - Added "Private Forums" card (📋) with detailed benefits
+   - Added "Private Messenger" card (💬) with encryption details
+   - Added "Forum Builder" card (🔨) with creation workflow
+   - Added Anonymous Inbox (📨) and Dead Man's Switch (⏰) features
+   - Improved feature discoverability before sign-in
+   - Resolved user feedback: "Where's the private messenger and forums?"
+3. ✅ **Created Comprehensive Documentation**
+   - TESTING-REPORT-OCT-5-2025.md - Full testing analysis and recommendations
+   - POLISH-SESSION-OCT-5-2025.md - Detailed code polish session log
+   - Updated NEXT-STEPS.md with completed tasks
+4. ✅ **Deployed to Production**
+   - Built frontend with new features section
+   - Committed changes (commits c3ce4d8, 08a4980)
+   - Synced to production/main branch
+   - Deployed to S3 + CloudFront invalidation (I5VJK8DBCV7LDJWIRU9BK6TW40)
+5. ✅ **Coordinated with Other Instances**
+   - Reviewed PRODUCTION-AUDIT and EMAIL-FORWARDING-SETUP docs
+   - Updated config.ts to use direct API Gateway URL
+   - Acknowledged email forwarding setup (pending DNS)
+
+### What Instance #4 Just Did (Username Creation Debug + Forums Investigation) - Previous Session
+1. ✅ **Investigated forums.snapitsoftware.com** - Found comprehensive strategy documents on desktop
+2. ✅ **Forums Status**: forums.snapitsoftware.com (plural) does NOT exist - only forum.snapitsoftware.com deployed
+3. ✅ **Strategic Docs Found**: 3 detailed documents outlining dual-platform vision, pricing, global expansion
+4. ✅ **Enhanced Authorizer Logging** - Added detailed logging to auth.js:235 to diagnose 403 errors
+5. ✅ **Deployed Backend** - Redeployed with authorizer logging (167s deployment at 22:40 UTC)
+6. ✅ **Created Investigation Report** - /tmp/forums-investigation-findings.md with complete analysis
+7. ⏳ **Username Creation** - Still experiencing 403 Forbidden, waiting for user to retry with new logs
+8. ✅ **Updated Config** - Changed API URL from custom domain to direct API Gateway URL
+
+### What Instance #3 Just Did (Production Audit) - Previous Session
 1. ✅ **CRITICAL FIX**: Fixed OAuth authentication - Added DynamoDB GSI permissions
 2. ✅ Deployed backend with all 44 Lambda functions (162s deployment)
 3. ✅ Rebuilt and deployed frontend to S3 + CloudFront
@@ -214,18 +252,31 @@ curl -I https://api.snapitsoftware.com/forums
 8. ✅ Identified 6 modified files + 4 new files pending commit
 
 ### What Needs Attention
-- **PRIORITY: Test OAuth Login** - GSI permissions now fixed, ready to test at forum.snapitsoftware.com
+- **✅ RESOLVED: Code Quality** - All build warnings eliminated, clean compilation
+- **✅ RESOLVED: Feature Visibility** - Landing page now showcases all core features prominently
+- **🚨 BLOCKING: Username Creation 403 Error** - Enhanced logging deployed, waiting for user retry
+  - Authorizer now logs token presence, validation errors, and JWT details
+  - Next test will reveal exact failure reason (expired token, wrong secret, missing header)
+  - Location: auth.js:235-271
+- **forums.snapitsoftware.com Decision Needed** - Domain available but not deployed
+  - Found 3 strategy docs with integration options (redirect, separate, or migrate)
+  - Need user decision on architecture approach
+  - See: INTEGRATION-PLAN.md and /tmp/forums-investigation-findings.md
+- **API URL Configuration** - Using direct API Gateway URL temporarily
+  - Custom domain api.snapitsoftware.com needs CloudFront/API Gateway mapping
+  - Current workaround: Direct URL in forum-app/src/config.ts
 - **Email Forwarding** - DNS propagation needed (24-48h) for @snapitsoftware.com → snapitsaas@gmail.com
-- **Commit Pending Changes** - 6 modified files + 4 new files (see list above)
-- **Database Cleanup** - Remove 5 legacy DynamoDB tables (snapit-forum-* without -api-)
+- **Commit Pending Changes** - 7 modified files + 5 new files (added auth.js changes)
 - **Production Testing** - Test all features end-to-end (OAuth, forums, messaging, Stripe)
-- **UI Redesign** (lower priority) - Implement spec from UI-REDESIGN-SPEC.md
 
-### Recommendations
-1. Review and commit pending changes first
-2. Run production tests (login, forum creation, messaging)
-3. Test Stripe checkout with real credit card
-4. Implement next priority features using agents
+### Recommendations for Next Instance
+1. **Test the new landing page** - Core Features section now live at forum.snapitsoftware.com
+2. **User should retry username creation** - Authorizer logging now enabled
+3. Check logs: `aws logs tail /aws/lambda/snapit-forum-api-prod-authorizer --since 10m`
+4. **Test contact and feedback forms** - Both forms deployed, need end-to-end verification
+5. Review strategic documents (forum-snapitsoftware.txt, forum2.txt, forum3.txt) for vision alignment
+6. Decide on forums.snapitsoftware.com architecture (see INTEGRATION-PLAN.md)
+7. Implement navigation bar and UI improvements once username creation works
 
 ---
 
