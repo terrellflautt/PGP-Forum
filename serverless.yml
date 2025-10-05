@@ -328,6 +328,15 @@ functions:
             name: authorizer
             resultTtlInSeconds: 300
 
+  # Donations
+  createDonationSession:
+    handler: src/handlers/donations.createDonationSession
+    events:
+      - http:
+          path: create-donation-session
+          method: post
+          cors: true
+
   # Stripe Webhooks
   stripeWebhook:
     handler: src/handlers/stripe.webhook

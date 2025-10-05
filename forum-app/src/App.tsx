@@ -12,8 +12,9 @@ import LandingPage from './components/LandingPage';
 import UsernameSetup from './components/UsernameSetup';
 import PublicProfile from './components/PublicProfile';
 import ChatInterface from './components/Messenger/ChatInterface';
+import ContributionsView from './components/ContributionsView';
 
-type View = 'forums' | 'messenger' | 'settings' | 'anonymous-inbox' | 'deadman';
+type View = 'forums' | 'messenger' | 'settings' | 'anonymous-inbox' | 'deadman' | 'contributions';
 
 function App() {
   const [currentView, setCurrentView] = useState<View>('forums');
@@ -171,6 +172,8 @@ function App() {
         return <ChatInterface currentUser={user} />;
       case 'settings':
         return <SettingsView user={user} forum={null} onLogout={handleLogout} />;
+      case 'contributions':
+        return <ContributionsView user={user} onLogout={handleLogout} />;
       default:
         return <ForumView user={user} forum={null} />;
     }

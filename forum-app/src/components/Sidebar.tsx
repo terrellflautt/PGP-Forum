@@ -12,6 +12,7 @@ export default function Sidebar({ currentView, onViewChange, forum }: SidebarPro
     { id: 'messenger', label: 'Messenger', icon: '💬', badge: '3' },
     { id: 'anonymous-inbox', label: 'Anonymous Inbox', icon: '📨', badge: '1' },
     { id: 'deadman', label: 'Dead Man\'s Switch', icon: '⏰', badge: null },
+    { id: 'contributions', label: 'Contributions', icon: '💝', badge: null },
     { id: 'settings', label: 'Settings', icon: '⚙️', badge: null },
   ];
 
