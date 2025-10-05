@@ -4,6 +4,40 @@ const dynamodb = new DynamoDB.DocumentClient();
 const USERS_TABLE = process.env.USERS_TABLE;
 const MESSAGES_TABLE = process.env.MESSAGES_TABLE || 'snapit-forum-messages-prod';
 
+// Get current user (authenticated)
+exports.getMe = async (event) => {
+  try {
+    const userId = event.requestContext.authorizer.userId;
+
+    const result = await dynamodb.get({
+      TableName: USERS_TABLE,
+      Key: { userId }
+    }).promise();
+
+    if (!result.Item) {
+      return {
+        statusCode: 404,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ error: 'User not found' })
+      };
+    }
+
+    // Return full user data for authenticated user
+    return {
+      statusCode: 200,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify(result.Item)
+    };
+  } catch (error) {
+    console.error('Get me error:', error);
+    return {
+      statusCode: 500,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({ error: 'Failed to get user' })
+    };
+  }
+};
+
 // Get user
 exports.get = async (event) => {
   try {

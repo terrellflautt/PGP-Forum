@@ -229,6 +229,17 @@ functions:
             resultTtlInSeconds: 300
 
   # User
+  getMe:
+    handler: src/handlers/users.getMe
+    events:
+      - http:
+          path: users/me
+          method: get
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 300
+
   getUser:
     handler: src/handlers/users.get
     events:

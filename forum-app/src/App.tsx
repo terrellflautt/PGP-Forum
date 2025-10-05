@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { GOOGLE_CLIENT_ID, BRAND_CONFIG } from './config';
+import { GOOGLE_CLIENT_ID, BRAND_CONFIG, API_BASE_URL } from './config';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import ForumView from './components/ForumView';
@@ -33,6 +33,53 @@ function App() {
   }, []);
 
   useEffect(() => {
+    // Check for OAuth callback token in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const tokenFromUrl = urlParams.get('token');
+
+    if (tokenFromUrl) {
+      // Save token from OAuth callback
+      localStorage.setItem('token', tokenFromUrl);
+
+      // Decode JWT to get userId
+      try {
+        const base64Url = tokenFromUrl.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
+          '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+        ).join(''));
+
+        const decoded = JSON.parse(jsonPayload);
+        const userId = decoded.userId;
+
+        // Fetch full user data
+        fetch(`${API_BASE_URL}/users/${userId}`)
+          .then(res => res.json())
+          .then(userData => {
+            setIsLoggedIn(true);
+            setUser(userData);
+            localStorage.setItem('user', JSON.stringify(userData));
+
+            // Check if user needs to set username
+            if (!userData.username) {
+              setNeedsUsername(true);
+            }
+
+            // Clean up URL
+            window.history.replaceState({}, '', window.location.pathname);
+          })
+          .catch(err => {
+            console.error('Failed to fetch user data:', err);
+            localStorage.removeItem('token');
+          });
+      } catch (err) {
+        console.error('Failed to decode token:', err);
+        localStorage.removeItem('token');
+      }
+
+      return;
+    }
+
     // Check for existing session
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');

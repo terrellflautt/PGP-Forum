@@ -3,7 +3,7 @@ export const API_BASE_URL = 'https://u25qbry7za.execute-api.us-east-1.amazonaws.
 
 // Google OAuth Configuration
 export const GOOGLE_CLIENT_ID = '242648112266-iglul54tuis9mhucsp1pmpqg0a48l8i0.apps.googleusercontent.com';
-export const GOOGLE_AUTH_URL = `${API_BASE_URL}/auth/google`;
+export const GOOGLE_AUTH_URL = 'https://auth.snapitsoftware.com/auth/google'; // Use custom domain
 
 // Stripe Configuration
 export const STRIPE_PUBLISHABLE_KEY = 'pk_test_51SEhKnEn5tPJtShN6vDBKCkJ7duYQyEuGTW2pefHTrrz2Ap3haoD5jPqHupI2JwYa8cHkerbAny8zWoaHTjb72Ge00Yt8YykcF';

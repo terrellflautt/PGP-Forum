@@ -13,14 +13,27 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 // Initiate Google OAuth (redirect to Google)
 exports.googleAuth = async (event) => {
-  const redirectUri = `${process.env.API_GATEWAY_URL || 'https://u25qbry7za.execute-api.us-east-1.amazonaws.com/prod'}/auth/google/callback`;
+  // Support both custom domain and API Gateway URL
+  const host = event.headers?.Host || event.headers?.host;
+  const protocol = event.headers?.['X-Forwarded-Proto'] || 'https';
+
+  // Use custom domain if available, otherwise fallback to API Gateway
+  let baseUrl;
+  if (host && host.includes('auth.snapitsoftware.com')) {
+    baseUrl = `${protocol}://auth.snapitsoftware.com`;
+  } else {
+    baseUrl = process.env.API_GATEWAY_URL || 'https://u25qbry7za.execute-api.us-east-1.amazonaws.com/prod';
+  }
+
+  const redirectUri = `${baseUrl}/auth/google/callback`;
   const scope = 'openid profile email';
   const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
 
   return {
     statusCode: 302,
     headers: {
-      Location: googleAuthUrl
+      Location: googleAuthUrl,
+      'Access-Control-Allow-Origin': '*'
     }
   };
 };
@@ -52,7 +65,18 @@ exports.googleCallback = async (event) => {
     }
 
     // Exchange code for tokens
-    const redirectUri = `${process.env.API_GATEWAY_URL || 'https://u25qbry7za.execute-api.us-east-1.amazonaws.com/prod'}/auth/google/callback`;
+    // Support both custom domain and API Gateway URL
+    const host = event.headers?.Host || event.headers?.host;
+    const protocol = event.headers?.['X-Forwarded-Proto'] || 'https';
+
+    let baseUrl;
+    if (host && host.includes('auth.snapitsoftware.com')) {
+      baseUrl = `${protocol}://auth.snapitsoftware.com`;
+    } else {
+      baseUrl = process.env.API_GATEWAY_URL || 'https://u25qbry7za.execute-api.us-east-1.amazonaws.com/prod';
+    }
+
+    const redirectUri = `${baseUrl}/auth/google/callback`;
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

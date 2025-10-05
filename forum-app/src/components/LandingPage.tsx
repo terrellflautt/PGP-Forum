@@ -367,36 +367,36 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
             <div>
               <h4 className="font-semibold text-white mb-4">Product</h4>
               <ul className="space-y-2 text-secondary-400">
-                <li><a href="#" className="hover:text-primary-400">Forums</a></li>
-                <li><a href="#" className="hover:text-primary-400">Messenger</a></li>
-                <li><a href="#" className="hover:text-primary-400">Anonymous Inbox</a></li>
+                <li><a href="#features" className="hover:text-primary-400">Forums</a></li>
+                <li><a href="#features" className="hover:text-primary-400">Messenger</a></li>
+                <li><a href="#features" className="hover:text-primary-400">Anonymous Inbox</a></li>
                 <li><a href="#pricing" className="hover:text-primary-400">Pricing</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold text-white mb-4">Security</h4>
               <ul className="space-y-2 text-secondary-400">
-                <li><a href="#" className="hover:text-primary-400">How It Works</a></li>
-                <li><a href="#" className="hover:text-primary-400">Encryption</a></li>
-                <li><a href="#" className="hover:text-primary-400">Anonymity</a></li>
-                <li><a href={BRAND_CONFIG.github} className="hover:text-primary-400">Open Source</a></li>
+                <li><a href="#features" className="hover:text-primary-400">How It Works</a></li>
+                <li><a href="#features" className="hover:text-primary-400">Encryption</a></li>
+                <li><a href="#features" className="hover:text-primary-400">Anonymity</a></li>
+                <li><a href={BRAND_CONFIG.github} target="_blank" rel="noopener noreferrer" className="hover:text-primary-400">Open Source</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold text-white mb-4">Resources</h4>
               <ul className="space-y-2 text-secondary-400">
-                <li><a href="#" className="hover:text-primary-400">Documentation</a></li>
-                <li><a href="#" className="hover:text-primary-400">User Guide</a></li>
-                <li><a href="#" className="hover:text-primary-400">Security Guide</a></li>
-                <li><a href="#" className="hover:text-primary-400">FAQ</a></li>
+                <li><a href={BRAND_CONFIG.github} target="_blank" rel="noopener noreferrer" className="hover:text-primary-400">Documentation</a></li>
+                <li><a href={BRAND_CONFIG.github} target="_blank" rel="noopener noreferrer" className="hover:text-primary-400">User Guide</a></li>
+                <li><a href="/privacy.html" className="hover:text-primary-400">Security Guide</a></li>
+                <li><a href={BRAND_CONFIG.github} target="_blank" rel="noopener noreferrer" className="hover:text-primary-400">FAQ</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold text-white mb-4">Legal</h4>
               <ul className="space-y-2 text-secondary-400">
-                <li><a href="/privacy" className="hover:text-primary-400">Privacy Policy</a></li>
-                <li><a href="/terms" className="hover:text-primary-400">Terms of Service</a></li>
-                <li><a href="/cookies" className="hover:text-primary-400">Cookie Policy</a></li>
+                <li><a href="/privacy.html" className="hover:text-primary-400">Privacy Policy</a></li>
+                <li><a href="/terms.html" className="hover:text-primary-400">Terms of Service</a></li>
+                <li><a href="mailto:snapitsaas@gmail.com" className="hover:text-primary-400">Contact</a></li>
               </ul>
             </div>
           </div>
