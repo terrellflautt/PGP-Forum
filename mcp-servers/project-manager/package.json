@@ -1,0 +1,24 @@
+{
+  "name": "snapit-forum-mcp-server",
+  "version": "1.0.0",
+  "description": "Model Context Protocol server for SnapIT Forum project management",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "snapit-forum",
+    "project-management"
+  ],
+  "author": "SnapIT Software",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

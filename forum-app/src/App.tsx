@@ -13,6 +13,7 @@ import UsernameSetup from './components/UsernameSetup';
 import PublicProfile from './components/PublicProfile';
 import ChatInterface from './components/Messenger/ChatInterface';
 import ContributionsView from './components/ContributionsView';
+import ResetPasswordView from './components/ResetPasswordView';
 
 type View = 'forums' | 'messenger' | 'settings' | 'anonymous-inbox' | 'deadman' | 'contributions';
 
@@ -34,11 +35,17 @@ function App() {
   }, []);
 
   useEffect(() => {
+    // Check for password reset route first
+    const path = window.location.pathname;
+    if (path === '/reset-password') {
+      return; // Let ResetPasswordView handle this route
+    }
+
     // Check for OAuth callback token in URL
     const urlParams = new URLSearchParams(window.location.search);
     const tokenFromUrl = urlParams.get('token');
 
-    if (tokenFromUrl) {
+    if (tokenFromUrl && !path.includes('/reset-password')) {
       // Save token from OAuth callback
       localStorage.setItem('token', tokenFromUrl);
 
@@ -95,7 +102,6 @@ function App() {
     }
 
     // Check for public profile route (/@username)
-    const path = window.location.pathname;
     if (path.startsWith('/@')) {
       const username = path.substring(2);
       setPublicProfileUsername(username);
@@ -117,6 +123,15 @@ function App() {
     localStorage.removeItem('user');
     localStorage.removeItem('forum');
   };
+
+  // Password reset route (accessible without login)
+  if (window.location.pathname === '/reset-password') {
+    return (
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+        <ResetPasswordView />
+      </GoogleOAuthProvider>
+    );
+  }
 
   // Public profile route (accessible without login)
   if (publicProfileUsername) {

@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "snapit-aws-operator": {
+      "command": "node",
+      "args": [
+        "/FULL/PATH/TO/snapit-forum/mcp-servers/aws-operator/index.js"
+      ],
+      "env": {
+        "AWS_PROFILE": "default",
+        "AWS_REGION": "us-east-1"
+      }
+    }
+  }
+}

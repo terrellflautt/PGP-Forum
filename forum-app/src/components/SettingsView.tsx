@@ -123,8 +123,274 @@ function ProfileSettings({ user }: any) {
 }
 
 function SecuritySettings() {
+  const [backupEmail, setBackupEmail] = useState('');
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [emailSending, setEmailSending] = useState(false);
+  const [emailSuccess, setEmailSuccess] = useState('');
+  const [emailError, setEmailError] = useState('');
+
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordStrength, setPasswordStrength] = useState(0);
+  const [passwordSetting, setPasswordSetting] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
+
+  const handleSendVerificationEmail = async () => {
+    setEmailError('');
+    setEmailSuccess('');
+    setEmailSending(true);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('https://api.snapitsoftware.com/auth/add-backup-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ email: backupEmail }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to send verification email');
+      }
+
+      setEmailSuccess('Verification email sent! Check your inbox.');
+    } catch (err: any) {
+      setEmailError(err.message || 'Failed to send verification email');
+    } finally {
+      setEmailSending(false);
+    }
+  };
+
+  const handleSetPassword = async () => {
+    setPasswordError('');
+    setPasswordSuccess('');
+
+    if (password !== confirmPassword) {
+      setPasswordError('Passwords do not match');
+      return;
+    }
+
+    if (passwordStrength < 3) {
+      setPasswordError('Password is too weak. Use at least 12 characters with mixed case, numbers, and symbols.');
+      return;
+    }
+
+    setPasswordSetting(true);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('https://api.snapitsoftware.com/auth/set-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to set password');
+      }
+
+      setPasswordSuccess('Password set successfully! You can now login with email and password.');
+      setPassword('');
+      setConfirmPassword('');
+    } catch (err: any) {
+      setPasswordError(err.message || 'Failed to set password');
+    } finally {
+      setPasswordSetting(false);
+    }
+  };
+
+  const calculatePasswordStrength = (pwd: string) => {
+    let strength = 0;
+    if (pwd.length >= 8) strength++;
+    if (pwd.length >= 12) strength++;
+    if (/[a-z]/.test(pwd) && /[A-Z]/.test(pwd)) strength++;
+    if (/\d/.test(pwd)) strength++;
+    if (/[^a-zA-Z0-9]/.test(pwd)) strength++;
+    return Math.min(strength, 4);
+  };
+
+  const handlePasswordChange = (pwd: string) => {
+    setPassword(pwd);
+    setPasswordStrength(calculatePasswordStrength(pwd));
+  };
+
+  const getStrengthColor = () => {
+    if (passwordStrength === 0) return 'bg-gray-200';
+    if (passwordStrength === 1) return 'bg-red-500';
+    if (passwordStrength === 2) return 'bg-orange-500';
+    if (passwordStrength === 3) return 'bg-yellow-500';
+    return 'bg-green-500';
+  };
+
+  const getStrengthText = () => {
+    if (passwordStrength === 0) return 'Too weak';
+    if (passwordStrength === 1) return 'Weak';
+    if (passwordStrength === 2) return 'Fair';
+    if (passwordStrength === 3) return 'Good';
+    return 'Strong';
+  };
+
   return (
     <div className="space-y-6">
+      {/* Backup Email Section */}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-secondary-200">
+        <h2 className="text-2xl font-bold text-secondary-900 mb-6">Backup Email</h2>
+
+        <div className="space-y-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-start space-x-2">
+              <svg className="w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div className="text-sm text-blue-900">
+                <p className="font-semibold mb-1">Add a backup email for account recovery</p>
+                <p className="text-blue-800">
+                  This email will be used for password reset and account recovery purposes.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-secondary-900 mb-2">
+              Backup Email Address
+            </label>
+            <div className="flex space-x-2">
+              <input
+                type="email"
+                value={backupEmail}
+                onChange={(e) => setBackupEmail(e.target.value)}
+                className="flex-1 px-4 py-2 border border-secondary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                placeholder="backup@email.com"
+              />
+              <button
+                onClick={handleSendVerificationEmail}
+                disabled={emailSending || !backupEmail}
+                className="px-6 py-2 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              >
+                {emailSending ? 'Sending...' : 'Send Verification'}
+              </button>
+            </div>
+          </div>
+
+          {emailSuccess && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+              <p className="text-sm text-green-700">{emailSuccess}</p>
+            </div>
+          )}
+
+          {emailError && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+              <p className="text-sm text-red-700">{emailError}</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Set Password Section - Only shows after email verified */}
+      {isEmailVerified && (
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-secondary-200">
+          <h2 className="text-2xl font-bold text-secondary-900 mb-6">Set Password</h2>
+
+          <div className="space-y-4">
+            {/* ProtonMail-style Warning */}
+            <div className="bg-red-50 border-2 border-red-300 rounded-lg p-4">
+              <div className="flex items-start space-x-2">
+                <svg className="w-6 h-6 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <div className="text-sm text-red-900">
+                  <p className="font-bold mb-2">WARNING: Zero-Knowledge Encryption</p>
+                  <p className="text-red-800 mb-2">
+                    Your password is the ONLY way to decrypt your data. If you forget it:
+                  </p>
+                  <ul className="list-disc list-inside space-y-1 text-red-800 ml-2">
+                    <li>ALL encrypted messages are permanently lost</li>
+                    <li>ALL PGP keys are permanently lost</li>
+                    <li>ALL encrypted data is permanently lost</li>
+                    <li>We CANNOT recover your data - it's mathematically impossible</li>
+                  </ul>
+                  <p className="text-red-800 mt-2 font-bold">
+                    Write down your password and store it securely!
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-secondary-900 mb-2">
+                New Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => handlePasswordChange(e.target.value)}
+                className="w-full px-4 py-2 border border-secondary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                placeholder="Enter a strong password"
+              />
+
+              {/* Password Strength Indicator */}
+              <div className="mt-2">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-semibold text-secondary-700">Password Strength:</span>
+                  <span className={`text-xs font-semibold ${passwordStrength >= 3 ? 'text-green-600' : 'text-orange-600'}`}>
+                    {getStrengthText()}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    className={`h-2 rounded-full transition-all duration-300 ${getStrengthColor()}`}
+                    style={{ width: `${(passwordStrength / 4) * 100}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-secondary-900 mb-2">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full px-4 py-2 border border-secondary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                placeholder="Confirm your password"
+              />
+            </div>
+
+            {passwordSuccess && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                <p className="text-sm text-green-700">{passwordSuccess}</p>
+              </div>
+            )}
+
+            {passwordError && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <p className="text-sm text-red-700">{passwordError}</p>
+              </div>
+            )}
+
+            <button
+              onClick={handleSetPassword}
+              disabled={passwordSetting || !password || !confirmPassword}
+              className="px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            >
+              {passwordSetting ? 'Setting Password...' : 'Set Password'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* PGP Keys Section */}
       <div className="bg-white rounded-xl p-6 shadow-sm border border-secondary-200">
         <h2 className="text-2xl font-bold text-secondary-900 mb-6">PGP Keys</h2>
 
@@ -161,6 +427,7 @@ function SecuritySettings() {
         </div>
       </div>
 
+      {/* Anonymous Mode Section */}
       <div className="bg-white rounded-xl p-6 shadow-sm border border-secondary-200">
         <h2 className="text-2xl font-bold text-secondary-900 mb-6">Anonymous Mode</h2>
 

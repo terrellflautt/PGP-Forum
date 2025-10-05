@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { GOOGLE_AUTH_URL, BRAND_CONFIG } from '../config';
+import ContactModal from './ContactModal';
 
 interface LandingPageProps {
   onGetStarted: () => void;
 }
 
 export default function LandingPage({ onGetStarted }: LandingPageProps) {
+  const [showContactModal, setShowContactModal] = useState(false);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-secondary-900 via-secondary-800 to-primary-900">
       {/* Pre-Alpha Warning Banner */}
@@ -396,8 +399,8 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
               <ul className="space-y-2 text-secondary-400">
                 <li><a href="/privacy.html" className="hover:text-primary-400">Privacy Policy</a></li>
                 <li><a href="/terms.html" className="hover:text-primary-400">Terms of Service</a></li>
-                <li><a href="#contact" className="hover:text-primary-400">Contact Us</a></li>
-                <li><a href="mailto:snapitsaas@gmail.com" className="hover:text-primary-400">snapitsaas@gmail.com</a></li>
+                <li><button onClick={() => setShowContactModal(true)} className="hover:text-primary-400 transition-colors">Contact Us</button></li>
+                <li><button onClick={() => setShowContactModal(true)} className="hover:text-primary-400 transition-colors">snapitsaas@gmail.com</button></li>
               </ul>
             </div>
           </div>
@@ -406,6 +409,11 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
           </div>
         </div>
       </div>
+
+      {/* Contact Modal */}
+      {showContactModal && (
+        <ContactModal onClose={() => setShowContactModal(false)} />
+      )}
     </div>
   );
 }

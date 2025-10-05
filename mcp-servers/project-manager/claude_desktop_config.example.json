@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "snapit-forum": {
+      "command": "node",
+      "args": [
+        "/mnt/c/Users/decry/Desktop/snapit-forum/mcp-servers/project-manager/index.js"
+      ]
+    }
+  }
+}
