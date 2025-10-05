@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - SnapIT Forums</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Pre-Alpha Warning Banner -->
+    <div class="bg-gradient-to-r from-yellow-600 to-orange-600">
+        <div class="max-w-4xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-center space-x-3 text-white text-center">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                <span class="font-semibold text-sm md:text-base">
+                    ⚠️ PRE-ALPHA TESTING - Security not guaranteed
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 py-12">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
+            <p class="text-gray-600 mb-8">Last Updated: October 5, 2025</p>
+
+            <!-- Pre-Alpha Disclaimer -->
+            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-8">
+                <h2 class="text-xl font-bold text-yellow-900 mb-2">⚠️ PRE-ALPHA TESTING DISCLAIMER</h2>
+                <p class="text-yellow-800 mb-4">
+                    <strong>THIS PLATFORM IS IN PRE-ALPHA TESTING.</strong>
+                </p>
+                <ul class="list-disc list-inside text-yellow-800 space-y-2">
+                    <li><strong>Security not guaranteed.</strong> Encryption systems are untested and may contain vulnerabilities.</li>
+                    <li><strong>Data may be exposed.</strong> Security breaches may occur during testing.</li>
+                    <li><strong>Use at your own risk.</strong> Do not share sensitive information on this platform.</li>
+                    <li><strong>For testing only.</strong> Not suitable for real whistleblowing or sensitive communications.</li>
+                </ul>
+                <p class="text-yellow-800 mt-4">
+                    <strong>By using SnapIT Forums, you acknowledge these privacy risks.</strong>
+                </p>
+            </div>
+
+            <div class="prose prose-lg max-w-none">
+                <h2>Our Philosophy</h2>
+                <p>
+                    SnapIT Forums is built for <strong>whistleblowers, journalists, and privacy advocates</strong>.
+                    We use <strong>zero-knowledge architecture</strong> to ensure we literally cannot read your private messages.
+                </p>
+
+                <h2>What We Collect</h2>
+
+                <h3>Information You Provide</h3>
+                <ul>
+                    <li><strong>Google Account Email:</strong> For authentication via OAuth</li>
+                    <li><strong>Username:</strong> Your chosen @username for anonymous inbox</li>
+                    <li><strong>Public Forum Posts:</strong> Unencrypted posts in public Shards</li>
+                    <li><strong>Profile Information:</strong> Display name, bio (optional)</li>
+                </ul>
+
+                <h3>Automatically Collected</h3>
+                <ul>
+                    <li><strong>Metadata:</strong> Timestamps, sender/recipient IDs</li>
+                    <li><strong>Usage Data:</strong> Pages visited, features used</li>
+                    <li><strong>Device Information:</strong> Browser type, operating system</li>
+                </ul>
+
+                <h2>What We CANNOT Collect</h2>
+                <p>
+                    Due to our zero-knowledge architecture, we <strong>mathematically cannot access:</strong>
+                </p>
+                <ul>
+                    <li><strong>Private Message Content:</strong> Encrypted with recipient's PGP public key, we hold no decryption key</li>
+                    <li><strong>Encryption Keys:</strong> Generated in browser with .extractable=false, impossible to export</li>
+                    <li><strong>Your IP Address:</strong> When using anonymous relay (routed through 3-5 random nodes)</li>
+                    <li><strong>Deleted Messages:</strong> 7-pass DoD secure deletion makes recovery impossible</li>
+                </ul>
+
+                <h2>How We Use Your Information</h2>
+
+                <h3>Authentication</h3>
+                <ul>
+                    <li>Verify your identity via Google OAuth</li>
+                    <li>Create and maintain your account</li>
+                </ul>
+
+                <h3>Service Delivery</h3>
+                <ul>
+                    <li>Route encrypted messages to intended recipients</li>
+                    <li>Display your public posts in forums</li>
+                    <li>Calculate your Power (upvote score)</li>
+                    <li>Enable shard creation for eligible users</li>
+                </ul>
+
+                <h3>Security & Moderation</h3>
+                <ul>
+                    <li>Prevent abuse, spam, and illegal activity</li>
+                    <li>Enforce Terms of Service</li>
+                    <li>Respond to legal requests (we can only provide non-encrypted data)</li>
+                </ul>
+
+                <h2>Data Storage</h2>
+
+                <h3>Encrypted Data</h3>
+                <p>
+                    Private messages are stored as <strong>encrypted ciphertext</strong> in AWS DynamoDB.
+                    We cannot decrypt them, even if legally compelled to do so.
+                </p>
+
+                <h3>Auto-Deletion</h3>
+                <p>
+                    Messages with auto-delete enabled are:
+                </p>
+                <ul>
+                    <li>Deleted automatically at scheduled time</li>
+                    <li>Overwritten with 7 passes of random data (DoD 5220.22-M)</li>
+                    <li>Forensically unrecoverable</li>
+                    <li>Removed from all backups</li>
+                </ul>
+
+                <h3>Backups</h3>
+                <p>
+                    <strong>We do NOT perform traditional backups.</strong> All data is ephemeral by design.
+                    If our database is destroyed, all data is permanently lost.
+                </p>
+
+                <h2>Data Sharing</h2>
+                <p>
+                    We <strong>do NOT sell, rent, or share</strong> your data with third parties, except:
+                </p>
+
+                <h3>Service Providers</h3>
+                <ul>
+                    <li><strong>AWS:</strong> Hosting infrastructure (DynamoDB, Lambda, CloudFront)</li>
+                    <li><strong>Google:</strong> OAuth authentication</li>
+                    <li><strong>Stripe:</strong> Payment processing (for premium features)</li>
+                </ul>
+
+                <h3>Legal Obligations</h3>
+                <p>
+                    If legally required, we may disclose:
+                </p>
+                <ul>
+                    <li>Your email address</li>
+                    <li>Your username</li>
+                    <li>Public forum posts</li>
+                    <li>Metadata (timestamps, user IDs)</li>
+                </ul>
+                <p>
+                    <strong>We CANNOT disclose:</strong>
+                </p>
+                <ul>
+                    <li>Private message content (encrypted, we have no key)</li>
+                    <li>Deleted messages (forensically unrecoverable)</li>
+                    <li>Encryption keys (browser-only, non-extractable)</li>
+                </ul>
+
+                <h2>Your Rights</h2>
+
+                <h3>Access & Portability</h3>
+                <p>
+                    You can export all your data at any time from your account settings.
+                </p>
+
+                <h3>Deletion</h3>
+                <p>
+                    You can delete your account at any time. This will:
+                </p>
+                <ul>
+                    <li>Permanently delete your profile and account data</li>
+                    <li>Remove your username from the platform</li>
+                    <li>Delete all your public posts</li>
+                    <li><strong>NOT delete:</strong> Messages already sent to others (they control their inbox)</li>
+                </ul>
+
+                <h3>Opt-Out of Tracking</h3>
+                <p>
+                    We use minimal analytics. You can:
+                </p>
+                <ul>
+                    <li>Use browser "Do Not Track" settings</li>
+                    <li>Block cookies</li>
+                    <li>Use anonymous relay for IP protection</li>
+                </ul>
+
+                <h2>Cookies</h2>
+                <p>
+                    We use cookies for:
+                </p>
+                <ul>
+                    <li><strong>Authentication:</strong> JWT tokens for session management</li>
+                    <li><strong>Preferences:</strong> Theme, language settings</li>
+                </ul>
+                <p>
+                    <strong>No third-party tracking cookies.</strong>
+                </p>
+
+                <h2>Children's Privacy</h2>
+                <p>
+                    SnapIT Forums is not intended for users under 13 years old.
+                    We do not knowingly collect data from children.
+                </p>
+
+                <h2>International Users</h2>
+                <p>
+                    Our servers are located in the United States (AWS us-east-1).
+                    By using the Service, you consent to data transfer to the US.
+                </p>
+
+                <h2>Security Measures</h2>
+
+                <h3>Encryption</h3>
+                <ul>
+                    <li><strong>End-to-End:</strong> 4096-bit RSA PGP encryption for private messages</li>
+                    <li><strong>Transport:</strong> TLS 1.3 for all connections</li>
+                    <li><strong>At-Rest:</strong> AWS encryption for database storage</li>
+                </ul>
+
+                <h3>Anonymous Relay</h3>
+                <ul>
+                    <li>Messages routed through 3-5 random WebRTC relay nodes</li>
+                    <li>Server only sees relay IP, not your real IP</li>
+                    <li>Onion-routing style anonymity</li>
+                </ul>
+
+                <h3>Non-Extractable Keys</h3>
+                <ul>
+                    <li>Private keys generated with .extractable=false flag</li>
+                    <li>Browser API enforces hardware-level protection</li>
+                    <li>Keys stored in IndexedDB, inaccessible to JavaScript</li>
+                </ul>
+
+                <h2>Data Breach Notification</h2>
+                <p>
+                    In the event of a data breach, we will:
+                </p>
+                <ul>
+                    <li>Notify affected users within 72 hours</li>
+                    <li>Disclose what data was compromised</li>
+                    <li>Provide recommended actions</li>
+                </ul>
+                <p>
+                    <strong>Note:</strong> Encrypted messages cannot be compromised without the private key, which we don't have.
+                </p>
+
+                <h2>Changes to This Policy</h2>
+                <p>
+                    We may update this Privacy Policy at any time. Material changes will be announced on the platform.
+                </p>
+
+                <h2>Contact</h2>
+                <p>
+                    For privacy questions or data requests, contact:
+                </p>
+                <ul>
+                    <li><strong>Email:</strong> snapitsaas@gmail.com</li>
+                    <li><strong>Anonymous Inbox:</strong> @admin (once you create an account)</li>
+                    <li><strong>GitHub:</strong> https://github.com/terrellflautt/PGP-Forum</li>
+                </ul>
+
+                <h2>Transparency Report</h2>
+                <p>
+                    We commit to publishing annual transparency reports detailing:
+                </p>
+                <ul>
+                    <li>Number of government data requests</li>
+                    <li>Number of accounts affected</li>
+                    <li>Types of data disclosed</li>
+                    <li>Warrant Canary status</li>
+                </ul>
+
+                <h2>Warrant Canary</h2>
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 my-6">
+                    <p class="text-green-900">
+                        <strong>🟢 Warrant Canary Status: ALIVE</strong>
+                    </p>
+                    <p class="text-green-800 text-sm mt-2">
+                        As of October 5, 2025, SnapIT Software has NOT received any:
+                    </p>
+                    <ul class="list-disc list-inside text-green-800 text-sm mt-2">
+                        <li>National Security Letters (NSLs)</li>
+                        <li>FISA court orders</li>
+                        <li>Gag orders preventing disclosure of government requests</li>
+                    </ul>
+                    <p class="text-green-800 text-sm mt-2">
+                        If this canary disappears or changes to 🔴, assume we have received such requests.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-12 pt-8 border-t border-gray-200 text-center">
+                <p class="text-gray-600 mb-4">
+                    Your privacy is our mission. We cannot read your messages, even if we wanted to.
+                </p>
+                <a href="/" class="inline-block px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                    Return to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -209,6 +209,25 @@ functions:
             name: authorizer
             resultTtlInSeconds: 300
 
+  sendAnonymousMessage:
+    handler: src/handlers/messages.sendAnonymous
+    events:
+      - http:
+          path: messages/anonymous
+          method: post
+          cors: true
+
+  getConversations:
+    handler: src/handlers/messages.getConversations
+    events:
+      - http:
+          path: conversations
+          method: get
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 300
+
   # User
   getUser:
     handler: src/handlers/users.get
@@ -224,6 +243,48 @@ functions:
       - http:
           path: users/me
           method: put
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 300
+
+  setUsername:
+    handler: src/handlers/users.setUsername
+    events:
+      - http:
+          path: users/me/username
+          method: put
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 300
+
+  checkUsername:
+    handler: src/handlers/users.checkUsername
+    events:
+      - http:
+          path: users/check-username
+          method: get
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 300
+
+  getPublicProfile:
+    handler: src/handlers/users.getPublicProfile
+    events:
+      - http:
+          path: users/profile/{username}
+          method: get
+          cors: true
+
+  # Posts voting (Reddit-style)
+  votePost:
+    handler: src/handlers/posts.vote
+    events:
+      - http:
+          path: posts/{postId}/vote
+          method: post
           cors: true
           authorizer:
             name: authorizer
@@ -354,6 +415,8 @@ resources:
             AttributeType: S
           - AttributeName: email
             AttributeType: S
+          - AttributeName: username
+            AttributeType: S
         KeySchema:
           - AttributeName: userId
             KeyType: HASH
@@ -361,6 +424,12 @@ resources:
           - IndexName: EmailIndex
             KeySchema:
               - AttributeName: email
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+          - IndexName: UsernameIndex
+            KeySchema:
+              - AttributeName: username
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
@@ -473,6 +542,22 @@ resources:
             KeyType: HASH
           - AttributeName: timestamp
             KeyType: RANGE
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+
+    # Votes Table (Reddit-style upvote/downvote)
+    VotesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-votes-${self:provider.stage}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: voteId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: voteId
+            KeyType: HASH
 
     # WebSocket Connections Table
     ConnectionsTable:

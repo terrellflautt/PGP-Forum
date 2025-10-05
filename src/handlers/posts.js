@@ -4,6 +4,7 @@ const dynamodb = new DynamoDB.DocumentClient();
 
 const POSTS_TABLE = process.env.POSTS_TABLE;
 const THREADS_TABLE = process.env.THREADS_TABLE;
+const VOTES_TABLE = process.env.VOTES_TABLE || 'snapit-forum-votes-prod';
 
 // List posts
 exports.list = async (event) => {
@@ -60,7 +61,10 @@ exports.create = async (event) => {
       content,
       createdAt: timestamp,
       edited: false,
-      editedAt: null
+      editedAt: null,
+      upvotes: 0,
+      downvotes: 0,
+      score: 0
     };
 
     await dynamodb.put({
@@ -92,6 +96,82 @@ exports.create = async (event) => {
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Failed to create post' })
+    };
+  }
+};
+
+// Vote on post (upvote/downvote like Reddit)
+exports.vote = async (event) => {
+  try {
+    const userId = event.requestContext.authorizer.userId;
+    const { postId } = event.pathParameters;
+    const { vote } = JSON.parse(event.body); // 1 for upvote, -1 for downvote, 0 to remove vote
+
+    if (![1, -1, 0].includes(vote)) {
+      return {
+        statusCode: 400,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ error: 'Invalid vote value' })
+      };
+    }
+
+    const voteId = `${postId}#${userId}`;
+
+    // Get existing vote
+    const existingVote = await dynamodb.get({
+      TableName: VOTES_TABLE,
+      Key: { voteId }
+    }).promise();
+
+    const oldVote = existingVote.Item?.vote || 0;
+
+    // Update or delete vote
+    if (vote === 0) {
+      // Remove vote
+      await dynamodb.delete({
+        TableName: VOTES_TABLE,
+        Key: { voteId }
+      }).promise();
+    } else {
+      // Update vote
+      await dynamodb.put({
+        TableName: VOTES_TABLE,
+        Item: {
+          voteId,
+          postId,
+          userId,
+          vote,
+          timestamp: Date.now()
+        }
+      }).promise();
+    }
+
+    // Calculate delta for post score
+    const delta = vote - oldVote;
+
+    // Update post score
+    await dynamodb.update({
+      TableName: POSTS_TABLE,
+      Key: { threadIdPostId: postId }, // Adjust based on your key structure
+      UpdateExpression: 'ADD score :delta, upvotes :upDelta, downvotes :downDelta',
+      ExpressionAttributeValues: {
+        ':delta': delta,
+        ':upDelta': vote === 1 ? 1 : (oldVote === 1 ? -1 : 0),
+        ':downDelta': vote === -1 ? 1 : (oldVote === -1 ? -1 : 0)
+      }
+    }).promise();
+
+    return {
+      statusCode: 200,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({ success: true, vote, delta })
+    };
+  } catch (error) {
+    console.error('Vote error:', error);
+    return {
+      statusCode: 500,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({ error: 'Failed to vote' })
     };
   }
 };

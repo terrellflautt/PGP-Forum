@@ -87,3 +87,120 @@ exports.send = async (event) => {
     };
   }
 };
+
+// Send anonymous message to @username
+exports.sendAnonymous = async (event) => {
+  try {
+    const { recipientUsername, encryptedContent, autoDeleteMinutes } = JSON.parse(event.body);
+
+    if (!recipientUsername || !encryptedContent) {
+      return {
+        statusCode: 400,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ error: 'Missing required fields' })
+      };
+    }
+
+    // Look up recipient by username
+    const USERS_TABLE = process.env.USERS_TABLE || 'snapit-forum-users-prod';
+    const userResult = await dynamodb.query({
+      TableName: USERS_TABLE,
+      IndexName: 'UsernameIndex',
+      KeyConditionExpression: 'username = :username',
+      ExpressionAttributeValues: {
+        ':username': recipientUsername
+      }
+    }).promise();
+
+    if (!userResult.Items || userResult.Items.length === 0) {
+      return {
+        statusCode: 404,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ error: 'User not found' })
+      };
+    }
+
+    const recipient = userResult.Items[0];
+    const messageId = `anon_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const timestamp = Date.now();
+
+    const message = {
+      messageId,
+      recipientId: recipient.userId,
+      fromAnonymous: true,
+      encryptedContent, // Already encrypted with recipient's public key
+      timestamp,
+      read: false,
+      ttl: autoDeleteMinutes ? Math.floor((Date.now() + (autoDeleteMinutes * 60 * 1000)) / 1000) : undefined
+    };
+
+    await dynamodb.put({
+      TableName: MESSAGES_TABLE,
+      Item: message
+    }).promise();
+
+    return {
+      statusCode: 201,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({ success: true, messageId })
+    };
+  } catch (error) {
+    console.error('Send anonymous message error:', error);
+    return {
+      statusCode: 500,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({ error: 'Failed to send anonymous message' })
+    };
+  }
+};
+
+// Get conversations list
+exports.getConversations = async (event) => {
+  try {
+    const userId = event.requestContext.authorizer.userId;
+
+    // Query messages where user is sender or recipient
+    const result = await dynamodb.query({
+      TableName: MESSAGES_TABLE,
+      IndexName: 'RecipientIndex',
+      KeyConditionExpression: 'recipientId = :userId',
+      ExpressionAttributeValues: {
+        ':userId': userId
+      },
+      ScanIndexForward: false,
+      Limit: 50
+    }).promise();
+
+    // Group by conversation and get last message
+    const conversations = {};
+    for (const msg of result.Items) {
+      const otherUserId = msg.fromUserId === userId ? msg.toUserId : msg.fromUserId;
+      if (!conversations[otherUserId] || msg.timestamp > conversations[otherUserId].lastMessageTime) {
+        conversations[otherUserId] = {
+          conversationId: otherUserId,
+          recipientId: otherUserId,
+          lastMessage: msg.encryptedContent ? '[Encrypted]' : '',
+          lastMessageTime: msg.timestamp,
+          unreadCount: msg.read ? 0 : 1,
+          typing: false,
+          online: false
+        };
+      }
+    }
+
+    return {
+      statusCode: 200,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({
+        conversations: Object.values(conversations)
+      })
+    };
+  } catch (error) {
+    console.error('Get conversations error:', error);
+    return {
+      statusCode: 500,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({ error: 'Failed to get conversations' })
+    };
+  }
+};

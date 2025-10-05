@@ -29,7 +29,7 @@ export default function PublicProfile({ username }: PublicProfileProps) {
 
   const loadProfile = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/users/@${username}`);
+      const response = await fetch(`${API_BASE_URL}/users/profile/${username}`);
 
       if (response.ok) {
         const data = await response.json();
