@@ -24,13 +24,12 @@ export default function ContactModal({ onClose }: ContactModalProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          access_key: '941dde05-6699-4793-b170-fb81b1659e32',
+          access_key: 'ebfa8f9b-ca95-40f0-abeb-23155a5a0c9c',
           name,
           email,
           subject,
           message,
           from_name: 'SnapIT Forum Contact Form',
-          to_email: 'snapitsaas@gmail.com',
         }),
       });
 
@@ -102,7 +101,7 @@ export default function ContactModal({ onClose }: ContactModalProps) {
               <div>
                 <h3 className="font-semibold text-red-900 mb-1">Failed to Send</h3>
                 <p className="text-sm text-red-800">
-                  Something went wrong. Please try again or email us directly at snapitsaas@gmail.com
+                  Something went wrong. Please try again or email us directly at snapitsoft@gmail.com
                 </p>
               </div>
             </div>
@@ -218,7 +217,7 @@ export default function ContactModal({ onClose }: ContactModalProps) {
         <div className="mt-6 pt-6 border-t border-secondary-200">
           <p className="text-sm text-secondary-600 text-center">
             Prefer email? Reach us at{' '}
-            <span className="font-semibold text-primary-600">snapitsaas@gmail.com</span>
+            <span className="font-semibold text-primary-600">snapitsoft@gmail.com</span>
           </p>
         </div>
       </div>

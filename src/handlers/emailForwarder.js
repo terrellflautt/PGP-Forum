@@ -31,11 +31,11 @@ exports.handler = async (event) => {
 
     const emailBody = emailData.Body.toString('utf-8');
 
-    // Forward email to snapitsaas@gmail.com with original context
+    // Forward email to snapitsoft@gmail.com with original context
     const forwardParams = {
       Source: 'noreply@snapitsoftware.com', // Must be SES-verified
       Destination: {
-        ToAddresses: ['snapitsaas@gmail.com']
+        ToAddresses: ['snapitsoft@gmail.com']
       },
       Message: {
         Subject: {

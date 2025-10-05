@@ -27,7 +27,7 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          access_key: '941dde05-6699-4793-b170-fb81b1659e32',
+          access_key: 'ebfa8f9b-ca95-40f0-abeb-23155a5a0c9c',
           name,
           email,
           subject: `User Feedback - Ease of Use: ${easeOfUse}/5`,
@@ -49,7 +49,6 @@ What features/web apps do you want us to build next?
 ${nextFeatures}
 `,
           from_name: 'SnapIT Forum Feedback Form',
-          to_email: 'snapitsaas@gmail.com',
         }),
       });
 

@@ -112,5 +112,6 @@ export const BRAND_CONFIG = {
   website: 'https://forum.snapitsoftware.com',
   parentSite: 'https://snapitsoftware.com',
   github: 'https://github.com/terrellflautt/PGP-Forum',
-  support: 'support@snapitsoftware.com'
+  support: 'support@snapitsoftware.com',
+  email: 'snapitsoft@gmail.com'
 };
