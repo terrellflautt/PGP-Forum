@@ -17,6 +17,9 @@ provider:
     GOOGLE_CLIENT_ID: ${env:GOOGLE_CLIENT_ID}
     JWT_SECRET: ${env:JWT_SECRET}
     STRIPE_SECRET_KEY: ${env:STRIPE_SECRET_KEY}
+    STRIPE_PRO_PRICE_ID: ${env:STRIPE_PRO_PRICE_ID, 'price_pro_monthly'}
+    STRIPE_BUSINESS_PRICE_ID: ${env:STRIPE_BUSINESS_PRICE_ID, 'price_business_monthly'}
+    STRIPE_ENTERPRISE_PRICE_ID: ${env:STRIPE_ENTERPRISE_PRICE_ID, 'price_enterprise_monthly'}
 
   iam:
     role:
@@ -202,6 +205,29 @@ functions:
   # Authorizer
   authorizer:
     handler: src/handlers/auth.authorizer
+
+  # Stripe Checkout
+  createCheckoutSession:
+    handler: src/handlers/checkout.createSession
+    events:
+      - http:
+          path: create-checkout-session
+          method: post
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 300
+
+  createPortalSession:
+    handler: src/handlers/checkout.createPortalSession
+    events:
+      - http:
+          path: create-portal-session
+          method: post
+          cors: true
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 300
 
   # Stripe Webhooks
   stripeWebhook:
