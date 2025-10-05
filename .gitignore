@@ -8,3 +8,4 @@ node_modules/
 .vscode/
 dist/
 .aws-sam/
+STRIPE-LIVE-KEYS.md
