@@ -25,6 +25,7 @@ export default function PublicProfile({ username }: PublicProfileProps) {
 
   useEffect(() => {
     loadProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
   const loadProfile = async () => {

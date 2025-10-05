@@ -16,6 +16,28 @@ export default function LoginModal({ onLogin, onClose }: LoginModalProps) {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   useEffect(() => {
+    const fetchUserData = async (token: string) => {
+      try {
+        // Fetch user data from API
+        const response = await fetch(`${API_BASE_URL}/users/me`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+
+        const data = await response.json();
+        onLogin(data.user, data.forum);
+      } catch (error) {
+        console.error('Login error:', error);
+        alert('Login failed. Please try again.');
+        localStorage.removeItem('token');
+      }
+    };
+
     // Check for auth callback (token in URL)
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
@@ -28,11 +50,15 @@ export default function LoginModal({ onLogin, onClose }: LoginModalProps) {
       // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, []);
+  }, [onLogin]);
 
-  const fetchUserData = async (token: string) => {
+  const handleGoogleSignIn = () => {
+    // Redirect to your auth service
+    window.location.href = GOOGLE_AUTH_URL;
+  };
+
+  const fetchUserDataForEmailLogin = async (token: string) => {
     try {
-      // Fetch user data from API
       const response = await fetch(`${API_BASE_URL}/users/me`, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -48,12 +74,8 @@ export default function LoginModal({ onLogin, onClose }: LoginModalProps) {
     } catch (error) {
       console.error('Login error:', error);
       alert('Login failed. Please try again.');
+      localStorage.removeItem('token');
     }
-  };
-
-  const handleGoogleSignIn = () => {
-    // Redirect to your auth service
-    window.location.href = GOOGLE_AUTH_URL;
   };
 
   const handleEmailLogin = async (e: React.FormEvent) => {
@@ -77,7 +99,7 @@ export default function LoginModal({ onLogin, onClose }: LoginModalProps) {
 
       const data = await response.json();
       localStorage.setItem('token', data.token);
-      fetchUserData(data.token);
+      fetchUserDataForEmailLogin(data.token);
     } catch (err: any) {
       setError(err.message || 'Login failed. Please try again.');
     } finally {

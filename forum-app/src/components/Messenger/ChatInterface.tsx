@@ -101,11 +101,13 @@ export default function ChatInterface({ currentUser }: ChatInterfaceProps) {
     return () => {
       ws.close();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Load conversations on mount
   useEffect(() => {
     loadConversations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Load messages when conversation changes

@@ -59,6 +59,12 @@ provider:
             - ses:SendEmail
             - ses:SendRawEmail
           Resource: "*"
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutObject
+          Resource:
+            - "arn:aws:s3:::snapitsoftware-ses-emails/*"
 
 package:
   patterns:
@@ -460,6 +466,17 @@ functions:
     events:
       - websocket:
           route: $default
+
+  # Email Forwarder (SES)
+  emailForwarder:
+    handler: src/handlers/emailForwarder.handler
+    environment:
+      EMAIL_BUCKET: snapitsoftware-ses-emails
+    events:
+      - s3:
+          bucket: snapitsoftware-ses-emails
+          event: s3:ObjectCreated:*
+          existing: true
 
 resources:
   Resources:

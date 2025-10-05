@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { GOOGLE_CLIENT_ID, BRAND_CONFIG, API_BASE_URL } from './config';
+import { GOOGLE_CLIENT_ID, API_BASE_URL } from './config';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import ForumView from './components/ForumView';
-import MessengerView from './components/MessengerView';
 import SettingsView from './components/SettingsView';
 import LoginModal from './components/LoginModal';
 import LandingPage from './components/LandingPage';
@@ -22,17 +21,8 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [scrolled, setScrolled] = useState(false);
   const [needsUsername, setNeedsUsername] = useState(false);
   const [publicProfileUsername, setPublicProfileUsername] = useState<string | null>(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   useEffect(() => {
     // Check for password reset route first

@@ -1,5 +1,4 @@
 import React from 'react';
-import { BRAND_CONFIG } from '../config';
 
 interface HeaderProps {
   user: any;

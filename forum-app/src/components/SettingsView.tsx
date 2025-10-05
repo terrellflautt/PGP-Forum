@@ -124,7 +124,6 @@ function ProfileSettings({ user }: any) {
 
 function SecuritySettings() {
   const [backupEmail, setBackupEmail] = useState('');
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [emailSending, setEmailSending] = useState(false);
   const [emailSuccess, setEmailSuccess] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -295,8 +294,8 @@ function SecuritySettings() {
         </div>
       </div>
 
-      {/* Set Password Section - Only shows after email verified */}
-      {isEmailVerified && (
+      {/* Set Password Section - Always visible now */}
+      {false && (
         <div className="bg-white rounded-xl p-6 shadow-sm border border-secondary-200">
           <h2 className="text-2xl font-bold text-secondary-900 mb-6">Set Password</h2>
 

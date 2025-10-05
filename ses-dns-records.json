@@ -1,0 +1,31 @@
+{
+  "Comment": "Add SES verification and MX records for snapitsoftware.com",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "_amazonses.snapitsoftware.com",
+        "Type": "TXT",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "\"ZwkQk0gs1ZPi9lBcCpSqiqwwJ3lYztAnrUf97wm6chE=\""
+          }
+        ]
+      }
+    },
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "snapitsoftware.com",
+        "Type": "MX",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "10 inbound-smtp.us-east-1.amazonaws.com"
+          }
+        ]
+      }
+    }
+  ]
+}
