@@ -1,5 +1,5 @@
 // API Configuration
-export const API_BASE_URL = 'https://u25qbry7za.execute-api.us-east-1.amazonaws.com/prod';
+export const API_BASE_URL = 'https://api.snapitsoftware.com';
 
 // Google OAuth Configuration
 export const GOOGLE_CLIENT_ID = '242648112266-iglul54tuis9mhucsp1pmpqg0a48l8i0.apps.googleusercontent.com';
