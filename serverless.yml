@@ -15,13 +15,13 @@ provider:
     POSTS_TABLE: ${self:service}-posts-${self:provider.stage}
     MESSAGES_TABLE: ${self:service}-messages-${self:provider.stage}
     GOOGLE_CLIENT_ID: ${ssm:/snapit-forum/prod/GOOGLE_CLIENT_ID}
-    GOOGLE_CLIENT_SECRET: ${ssm:/snapit-forum/prod/GOOGLE_CLIENT_SECRET~true}
-    JWT_SECRET: ${ssm:/snapit-forum/prod/JWT_SECRET~true}
-    STRIPE_SECRET_KEY: ${ssm:/snapit-forum/prod/STRIPE_SECRET_KEY~true}
+    GOOGLE_CLIENT_SECRET: ${ssm:/snapit-forum/prod/GOOGLE_CLIENT_SECRET}
+    JWT_SECRET: ${ssm:/snapit-forum/prod/JWT_SECRET}
+    STRIPE_SECRET_KEY: ${ssm:/snapit-forum/prod/STRIPE_SECRET_KEY}
     STRIPE_PRO_PRICE_ID: ${ssm:/snapit-forum/prod/STRIPE_PRO_PRICE_ID}
     STRIPE_BUSINESS_PRICE_ID: ${ssm:/snapit-forum/prod/STRIPE_BUSINESS_PRICE_ID}
     STRIPE_ENTERPRISE_PRICE_ID: ${ssm:/snapit-forum/prod/STRIPE_ENTERPRISE_PRICE_ID}
-    STRIPE_WEBHOOK_SECRET: ${ssm:/snapit-forum/prod/STRIPE_WEBHOOK_SECRET~true}
+    STRIPE_WEBHOOK_SECRET: ${ssm:/snapit-forum/prod/STRIPE_WEBHOOK_SECRET}
 
   iam:
     role:
