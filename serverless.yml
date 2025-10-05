@@ -14,13 +14,14 @@ provider:
     THREADS_TABLE: ${self:service}-threads-${self:provider.stage}
     POSTS_TABLE: ${self:service}-posts-${self:provider.stage}
     MESSAGES_TABLE: ${self:service}-messages-${self:provider.stage}
-    GOOGLE_CLIENT_ID: ${env:GOOGLE_CLIENT_ID}
-    JWT_SECRET: ${env:JWT_SECRET}
-    STRIPE_SECRET_KEY: ${env:STRIPE_SECRET_KEY}
-    STRIPE_PRO_PRICE_ID: ${env:STRIPE_PRO_PRICE_ID}
-    STRIPE_BUSINESS_PRICE_ID: ${env:STRIPE_BUSINESS_PRICE_ID}
-    STRIPE_ENTERPRISE_PRICE_ID: ${env:STRIPE_ENTERPRISE_PRICE_ID}
-    STRIPE_WEBHOOK_SECRET: ${env:STRIPE_WEBHOOK_SECRET}
+    GOOGLE_CLIENT_ID: ${ssm:/snapit-forum/prod/GOOGLE_CLIENT_ID}
+    GOOGLE_CLIENT_SECRET: ${ssm:/snapit-forum/prod/GOOGLE_CLIENT_SECRET~true}
+    JWT_SECRET: ${ssm:/snapit-forum/prod/JWT_SECRET~true}
+    STRIPE_SECRET_KEY: ${ssm:/snapit-forum/prod/STRIPE_SECRET_KEY~true}
+    STRIPE_PRO_PRICE_ID: ${ssm:/snapit-forum/prod/STRIPE_PRO_PRICE_ID}
+    STRIPE_BUSINESS_PRICE_ID: ${ssm:/snapit-forum/prod/STRIPE_BUSINESS_PRICE_ID}
+    STRIPE_ENTERPRISE_PRICE_ID: ${ssm:/snapit-forum/prod/STRIPE_ENTERPRISE_PRICE_ID}
+    STRIPE_WEBHOOK_SECRET: ${ssm:/snapit-forum/prod/STRIPE_WEBHOOK_SECRET~true}
 
   iam:
     role:
@@ -45,6 +46,12 @@ provider:
             - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.MESSAGES_TABLE}"
             - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.THREADS_TABLE}/index/*"
             - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.POSTS_TABLE}/index/*"
+        - Effect: Allow
+          Action:
+            - ssm:GetParameter
+            - ssm:GetParameters
+          Resource:
+            - "arn:aws:ssm:${self:provider.region}:*:parameter/snapit-forum/prod/*"
 
 package:
   patterns:
@@ -60,6 +67,14 @@ package:
 functions:
   # Auth
   googleAuth:
+    handler: src/handlers/auth.googleAuth
+    events:
+      - http:
+          path: auth/google
+          method: get
+          cors: true
+
+  googleCallback:
     handler: src/handlers/auth.googleCallback
     events:
       - http:

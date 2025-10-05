@@ -11,26 +11,73 @@ const FORUMS_TABLE = process.env.FORUMS_TABLE;
 const FORUM_MEMBERS_TABLE = process.env.FORUM_MEMBERS_TABLE;
 const JWT_SECRET = process.env.JWT_SECRET;
 
+// Initiate Google OAuth (redirect to Google)
+exports.googleAuth = async (event) => {
+  const redirectUri = `${process.env.API_GATEWAY_URL || 'https://u25qbry7za.execute-api.us-east-1.amazonaws.com/prod'}/auth/google/callback`;
+  const scope = 'openid profile email';
+  const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
+
+  return {
+    statusCode: 302,
+    headers: {
+      Location: googleAuthUrl
+    }
+  };
+};
+
 // Google OAuth Callback
 exports.googleCallback = async (event) => {
   try {
-    const { code, state } = event.queryStringParameters;
+    const { code, error } = event.queryStringParameters || {};
+
+    if (error) {
+      console.error('Google OAuth error:', error);
+      return {
+        statusCode: 302,
+        headers: {
+          Location: `https://forum.snapitsoftware.com/?error=${encodeURIComponent(error)}`
+        }
+      };
+    }
 
     if (!code) {
       return {
         statusCode: 400,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
         body: JSON.stringify({ error: 'Missing authorization code' })
       };
     }
 
-    // Exchange code for tokens (this would integrate with your auth-service)
-    // For now, simulate the process
-    const googleUser = {
-      sub: 'google-' + uuidv4(),
-      email: 'user@example.com',
-      name: 'John Doe',
-      picture: 'https://via.placeholder.com/150'
-    };
+    // Exchange code for tokens
+    const redirectUri = `${process.env.API_GATEWAY_URL || 'https://u25qbry7za.execute-api.us-east-1.amazonaws.com/prod'}/auth/google/callback`;
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        code,
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: redirectUri,
+        grant_type: 'authorization_code'
+      })
+    });
+
+    if (!tokenResponse.ok) {
+      throw new Error('Failed to exchange code for tokens');
+    }
+
+    const tokens = await tokenResponse.json();
+
+    // Verify ID token and get user info
+    const ticket = await client.verifyIdToken({
+      idToken: tokens.id_token,
+      audience: process.env.GOOGLE_CLIENT_ID
+    });
+
+    const googleUser = ticket.getPayload();
 
     // Check if user exists
     let user = await getUserByEmail(googleUser.email);
@@ -38,12 +85,13 @@ exports.googleCallback = async (event) => {
     if (!user) {
       // Create new user
       user = {
-        userId: googleUser.sub,
+        userId: `google_${googleUser.sub}`,
         email: googleUser.email,
         name: googleUser.name,
         picture: googleUser.picture,
         createdAt: Date.now(),
-        pgpPublicKey: null
+        pgpPublicKey: null,
+        emailVerified: googleUser.email_verified
       };
 
       await dynamodb.put({
@@ -66,15 +114,17 @@ exports.googleCallback = async (event) => {
     return {
       statusCode: 302,
       headers: {
-        Location: `https://forum.snapitsoftware.com/?token=${token}&user=${encodeURIComponent(JSON.stringify(user))}`
+        Location: `https://forum.snapitsoftware.com/?token=${token}`
       }
     };
 
   } catch (error) {
     console.error('Google auth error:', error);
     return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Authentication failed' })
+      statusCode: 302,
+      headers: {
+        Location: `https://forum.snapitsoftware.com/?error=${encodeURIComponent('Authentication failed')}`
+      }
     };
   }
 };
