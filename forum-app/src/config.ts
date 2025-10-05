@@ -6,7 +6,8 @@ export const GOOGLE_CLIENT_ID = '242648112266-iglul54tuis9mhucsp1pmpqg0a48l8i0.a
 export const GOOGLE_AUTH_URL = 'https://auth.snapitsoftware.com/auth/google'; // Use custom domain
 
 // Stripe Configuration
-export const STRIPE_PUBLISHABLE_KEY = 'pk_test_51SEhKnEn5tPJtShN6vDBKCkJ7duYQyEuGTW2pefHTrrz2Ap3haoD5jPqHupI2JwYa8cHkerbAny8zWoaHTjb72Ge00Yt8YykcF';
+// LIVE MODE: Ready for production payments
+export const STRIPE_PUBLISHABLE_KEY = 'pk_live_51SEhK7Ikj5YQseOZdDlxSF559wAxa2VaukNqsoFjehtq26Yr6lftlDso5HxqGyKVZy907ylLHgFOPYp9tBKLEDzk00KEYnlJ15';
 
 // Free Tier Configuration
 export const FREE_TIER_USER_LIMIT = 1500;
