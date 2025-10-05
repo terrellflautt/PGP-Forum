@@ -332,7 +332,15 @@ functions:
       - http:
           path: users/me/username
           method: put
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+            allowCredentials: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 300

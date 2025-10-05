@@ -234,8 +234,19 @@ async function getUserByEmail(email) {
 // JWT Authorizer
 exports.authorizer = async (event) => {
   try {
+    console.log('Authorizer invoked for:', event.methodArn);
+    console.log('Authorization header:', event.authorizationToken ? 'Present' : 'Missing');
+
+    if (!event.authorizationToken) {
+      console.error('No authorization token provided');
+      throw new Error('Unauthorized: No token');
+    }
+
     const token = event.authorizationToken.replace('Bearer ', '');
+    console.log('Token (first 20 chars):', token.substring(0, 20));
+
     const decoded = jwt.verify(token, JWT_SECRET);
+    console.log('Token verified successfully for userId:', decoded.userId);
 
     return {
       principalId: decoded.userId,
@@ -253,6 +264,8 @@ exports.authorizer = async (event) => {
       }
     };
   } catch (error) {
+    console.error('Authorization failed:', error.message);
+    console.error('Error details:', error.name);
     throw new Error('Unauthorized');
   }
 };
