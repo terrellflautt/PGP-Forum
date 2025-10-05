@@ -63,7 +63,7 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
             </div>
 
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 animate-fade-in-up">
-              Speak Truth to Power
+              Speak
               <br />
               <span className="text-gradient-animate bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 bg-clip-text text-transparent">
                 Anonymously & Securely
