@@ -10,7 +10,7 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
   const [showContactModal, setShowContactModal] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-secondary-900 via-secondary-800 to-primary-900">
+    <div className="min-h-screen bg-gradient-to-br from-[#0a0012] via-[#1a0a2e] to-[#0f0520]">
       {/* Pre-Alpha Warning Banner */}
       <div className="bg-gradient-to-r from-yellow-600/90 to-orange-600/90 backdrop-blur-sm border-b border-yellow-500/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
@@ -27,11 +27,12 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
 
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        {/* Animated Background Blobs */}
+        {/* Animated Background Blobs - Dark Purple/Hot Pink */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary-500/30 rounded-full blur-3xl animate-blob"></div>
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-primary-600/20 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
-          <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-primary-400/20 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
+          <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#ff006e]/30 rounded-full blur-3xl animate-blob"></div>
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[#8338ec]/25 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
+          <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-[#ff006e]/20 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
+          <div className="absolute top-20 right-1/4 w-64 h-64 bg-[#3a0ca3]/20 rounded-full blur-3xl animate-blob animation-delay-6000"></div>
         </div>
 
         {/* Content */}
@@ -39,7 +40,7 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
           {/* Navigation */}
           <nav className="flex items-center justify-between mb-16">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-to-br from-[#ff006e] to-[#8338ec] rounded-xl flex items-center justify-center shadow-lg shadow-[#ff006e]/50">
                 <span className="text-white font-bold text-2xl">S</span>
               </div>
               <div>
@@ -65,7 +66,7 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 animate-fade-in-up">
               Speak
               <br />
-              <span className="text-gradient-animate bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 bg-clip-text text-transparent">
+              <span className="text-gradient-animate bg-gradient-to-r from-[#ff006e] via-[#ff5eb3] to-[#8338ec] bg-clip-text text-transparent">
                 Anonymously & Securely
               </span>
             </h1>
@@ -79,7 +80,7 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 animate-fade-in-up animation-delay-400">
               <button
                 onClick={() => window.location.href = GOOGLE_AUTH_URL}
-                className="group px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white text-lg font-semibold rounded-xl shadow-2xl hover:shadow-primary-500/50 transform hover:scale-105 transition-all duration-200"
+                className="group px-8 py-4 bg-gradient-to-r from-[#ff006e] to-[#8338ec] text-white text-lg font-semibold rounded-xl shadow-2xl shadow-[#ff006e]/30 hover:shadow-[#ff006e]/60 transform hover:scale-105 hover:shadow-2xl transition-all duration-300"
               >
                 <span className="flex items-center justify-center space-x-2">
                   <span>Start Your Free Forum</span>

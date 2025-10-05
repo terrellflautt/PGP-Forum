@@ -57,17 +57,17 @@ export default function ContactModal({ onClose }: ContactModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-2xl p-8 max-w-2xl w-full mx-4 shadow-2xl animate-slide-up max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md animate-fade-in">
+      <div className="bg-gradient-to-br from-[#1a0a2e]/95 to-[#0f0520]/95 backdrop-blur-xl border border-[#ff006e]/20 rounded-2xl p-8 max-w-2xl w-full mx-4 shadow-2xl shadow-[#ff006e]/20 animate-slide-up max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-3xl font-bold text-secondary-900">Contact Us</h2>
-            <p className="text-secondary-600 mt-1">We'd love to hear from you</p>
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-[#ff006e] to-[#ff5eb3] bg-clip-text text-transparent">Contact Us</h2>
+            <p className="text-gray-400 mt-1">We'd love to hear from you</p>
           </div>
           <button
             onClick={onClose}
-            className="text-secondary-500 hover:text-secondary-700 transition-colors"
+            className="text-gray-400 hover:text-[#ff006e] transition-all duration-300 transform hover:scale-110 hover:rotate-90"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -113,58 +113,66 @@ export default function ContactModal({ onClose }: ContactModalProps) {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-semibold text-secondary-900 mb-2">
+              <label htmlFor="contact-name" className="block text-sm font-semibold text-white mb-2">
                 Your Name
               </label>
               <input
+                id="contact-name"
+                name="name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-4 py-3 bg-[#0a0012]/50 border border-[#ff006e]/20 text-white placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff006e]/50 focus:border-[#ff006e] transition-all duration-300"
                 placeholder="John Doe"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-secondary-900 mb-2">
+              <label htmlFor="contact-email" className="block text-sm font-semibold text-white mb-2">
                 Your Email
               </label>
               <input
+                id="contact-email"
+                name="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-4 py-3 bg-[#0a0012]/50 border border-[#ff006e]/20 text-white placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff006e]/50 focus:border-[#ff006e] transition-all duration-300"
                 placeholder="you@example.com"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-secondary-900 mb-2">
+            <label htmlFor="contact-subject" className="block text-sm font-semibold text-white mb-2">
               Subject
             </label>
             <input
+              id="contact-subject"
+              name="subject"
               type="text"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full px-4 py-3 bg-[#0a0012]/50 border border-[#ff006e]/20 text-white placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff006e]/50 focus:border-[#ff006e] transition-all duration-300"
               placeholder="How can we help?"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-secondary-900 mb-2">
+            <label htmlFor="contact-message" className="block text-sm font-semibold text-white mb-2">
               Message
             </label>
             <textarea
+              id="contact-message"
+              name="message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               required
               rows={6}
-              className="w-full px-4 py-3 border border-secondary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+              className="w-full px-4 py-3 bg-[#0a0012]/50 border border-[#ff006e]/20 text-white placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff006e]/50 focus:border-[#ff006e] transition-all duration-300 resize-none"
               placeholder="Tell us what's on your mind..."
             />
           </div>
@@ -185,7 +193,7 @@ export default function ContactModal({ onClose }: ContactModalProps) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full px-6 py-4 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white text-lg font-semibold rounded-xl shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            className="w-full px-6 py-4 bg-gradient-to-r from-[#ff006e] to-[#8338ec] hover:from-[#ff1a7f] hover:to-[#9145ff] text-white text-lg font-semibold rounded-xl shadow-lg shadow-[#ff006e]/30 hover:shadow-2xl hover:shadow-[#ff006e]/50 transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
             {isSubmitting ? (
               <span className="flex items-center justify-center space-x-2">
