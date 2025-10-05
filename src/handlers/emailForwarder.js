@@ -1,7 +1,7 @@
 /**
  * SES Email Forwarder Lambda Function
  *
- * Forwards all emails sent to @snapitsoftware.com to snapitsaas@gmail.com
+ * Forwards all emails sent to @snapitsoftware.com to snapitsoft@gmail.com
  * Preserves original sender info and subject line
  */
 
