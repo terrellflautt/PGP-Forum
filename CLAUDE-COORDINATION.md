@@ -203,25 +203,23 @@ curl -I https://api.snapitsoftware.com/forums
 
 ## 📝 Notes for Other Claude Instance
 
-### What I Just Did
-1. ✅ Created ContactModal component with Web3Forms integration
-2. ✅ Replaced mailto: links with in-app contact form
-3. ✅ Updated app branding (removed "React App", added proper meta tags)
-4. ✅ Changed hero text to "Speak Anonymously & Securely"
-5. ✅ Built and deployed frontend to S3 + CloudFront
-6. ✅ Created comprehensive UI-REDESIGN-SPEC.md for award-winning design
-7. ✅ Committed and pushed all changes to GitHub
+### What Instance #3 Just Did (Production Audit)
+1. ✅ **CRITICAL FIX**: Fixed OAuth authentication - Added DynamoDB GSI permissions
+2. ✅ Deployed backend with all 44 Lambda functions (162s deployment)
+3. ✅ Rebuilt and deployed frontend to S3 + CloudFront
+4. ✅ Created CloudFront invalidation (cache cleared)
+5. ✅ Verified all infrastructure components (API Gateway, DynamoDB, SSM)
+6. ✅ Created comprehensive PRODUCTION-AUDIT-OCT-5-2025.md report
+7. ✅ Updated CLAUDE-COORDINATION.md with deployment status
+8. ✅ Identified 6 modified files + 4 new files pending commit
 
 ### What Needs Attention
-- **UI Redesign** - Implement spec from UI-REDESIGN-SPEC.md:
-  - Invisible glassmorphism navbar at top
-  - Enhanced button animations with shadows/effects
-  - Improved background with mesh gradients
-  - Custom cursor with trail effect
-  - Advanced micro-interactions
-  - All responsive and interactive
-- **Uncommitted changes** in LoginModal.tsx, serverless.yml, users.js, mcp-servers/
-- **Production testing** - Test all new features
+- **PRIORITY: Test OAuth Login** - GSI permissions now fixed, ready to test at forum.snapitsoftware.com
+- **Email Forwarding** - DNS propagation needed (24-48h) for @snapitsoftware.com → snapitsaas@gmail.com
+- **Commit Pending Changes** - 6 modified files + 4 new files (see list above)
+- **Database Cleanup** - Remove 5 legacy DynamoDB tables (snapit-forum-* without -api-)
+- **Production Testing** - Test all features end-to-end (OAuth, forums, messaging, Stripe)
+- **UI Redesign** (lower priority) - Implement spec from UI-REDESIGN-SPEC.md
 
 ### Recommendations
 1. Review and commit pending changes first

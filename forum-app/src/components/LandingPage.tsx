@@ -124,6 +124,148 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
         </div>
       </div>
 
+      {/* Core Features Section */}
+      <div id="features" className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#ff006e]/5 to-transparent"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Everything You Need to <span className="bg-gradient-to-r from-[#ff006e] to-[#8338ec] bg-clip-text text-transparent">Communicate Securely</span>
+            </h2>
+            <p className="text-xl text-secondary-400">Three powerful features in one encrypted platform</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            {/* Private Forums */}
+            <div className="group bg-gradient-to-br from-[#1a0a2e]/90 to-[#0f0520]/90 backdrop-blur-xl border border-[#ff006e]/20 rounded-2xl p-8 hover:border-[#ff006e]/50 transition-all duration-300 hover:shadow-2xl hover:shadow-[#ff006e]/20 hover:scale-105">
+              <div className="flex items-center justify-between mb-6">
+                <div className="text-6xl">📋</div>
+                <div className="w-12 h-12 bg-gradient-to-br from-[#ff006e]/20 to-[#8338ec]/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <svg className="w-6 h-6 text-[#ff006e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">Private Forums</h3>
+              <p className="text-secondary-400 mb-6">
+                Build encrypted communities with threads, categories, and upvoting. Free tier includes 1,500 users.
+              </p>
+              <ul className="space-y-3">
+                <li className="flex items-start space-x-2 text-secondary-300">
+                  <span className="text-[#ff006e] mt-1">✓</span>
+                  <span>Create unlimited forums</span>
+                </li>
+                <li className="flex items-start space-x-2 text-secondary-300">
+                  <span className="text-[#ff006e] mt-1">✓</span>
+                  <span>Organize with categories & threads</span>
+                </li>
+                <li className="flex items-start space-x-2 text-secondary-300">
+                  <span className="text-[#ff006e] mt-1">✓</span>
+                  <span>Reputation system with Power points</span>
+                </li>
+                <li className="flex items-start space-x-2 text-secondary-300">
+                  <span className="text-[#ff006e] mt-1">✓</span>
+                  <span>Public or invite-only access</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Private Messenger */}
+            <div className="group bg-gradient-to-br from-[#1a0a2e]/90 to-[#0f0520]/90 backdrop-blur-xl border border-[#ff006e]/20 rounded-2xl p-8 hover:border-[#ff006e]/50 transition-all duration-300 hover:shadow-2xl hover:shadow-[#ff006e]/20 hover:scale-105">
+              <div className="flex items-center justify-between mb-6">
+                <div className="text-6xl">💬</div>
+                <div className="w-12 h-12 bg-gradient-to-br from-[#ff006e]/20 to-[#8338ec]/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <svg className="w-6 h-6 text-[#ff006e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">Private Messenger</h3>
+              <p className="text-secondary-400 mb-6">
+                End-to-end encrypted real-time chat with PGP encryption and anonymous IP relay routing.
+              </p>
+              <ul className="space-y-3">
+                <li className="flex items-start space-x-2 text-secondary-300">
+                  <span className="text-[#ff006e] mt-1">✓</span>
+                  <span>4096-bit PGP encryption</span>
+                </li>
+                <li className="flex items-start space-x-2 text-secondary-300">
+                  <span className="text-[#ff006e] mt-1">✓</span>
+                  <span>Anonymous relay (3-5 hops)</span>
+                </li>
+                <li className="flex items-start space-x-2 text-secondary-300">
+                  <span className="text-[#ff006e] mt-1">✓</span>
+                  <span>Self-destructing messages</span>
+                </li>
+                <li className="flex items-start space-x-2 text-secondary-300">
+                  <span className="text-[#ff006e] mt-1">✓</span>
+                  <span>P2P encrypted file sharing</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Forum Builder */}
+            <div className="group bg-gradient-to-br from-[#1a0a2e]/90 to-[#0f0520]/90 backdrop-blur-xl border border-[#ff006e]/20 rounded-2xl p-8 hover:border-[#ff006e]/50 transition-all duration-300 hover:shadow-2xl hover:shadow-[#ff006e]/20 hover:scale-105">
+              <div className="flex items-center justify-between mb-6">
+                <div className="text-6xl">🔨</div>
+                <div className="w-12 h-12 bg-gradient-to-br from-[#ff006e]/20 to-[#8338ec]/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <svg className="w-6 h-6 text-[#ff006e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-4">Forum Builder</h3>
+              <p className="text-secondary-400 mb-6">
+                Launch your own encrypted community in minutes. No coding required. Fully customizable.
+              </p>
+              <ul className="space-y-3">
+                <li className="flex items-start space-x-2 text-secondary-300">
+                  <span className="text-[#ff006e] mt-1">✓</span>
+                  <span>One-click forum creation</span>
+                </li>
+                <li className="flex items-start space-x-2 text-secondary-300">
+                  <span className="text-[#ff006e] mt-1">✓</span>
+                  <span>Custom subdomain included</span>
+                </li>
+                <li className="flex items-start space-x-2 text-secondary-300">
+                  <span className="text-[#ff006e] mt-1">✓</span>
+                  <span>Moderation tools & admin panel</span>
+                </li>
+                <li className="flex items-start space-x-2 text-secondary-300">
+                  <span className="text-[#ff006e] mt-1">✓</span>
+                  <span>Upgrade to custom domain</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Additional Features Row */}
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Anonymous Inbox */}
+            <div className="bg-gradient-to-br from-[#0a0012]/80 to-[#1a0a2e]/80 backdrop-blur-sm border border-[#8338ec]/20 rounded-xl p-6 hover:border-[#8338ec]/40 transition-all duration-300">
+              <div className="flex items-start space-x-4">
+                <div className="text-4xl">📨</div>
+                <div className="flex-1">
+                  <h4 className="text-xl font-bold text-white mb-2">Anonymous Inbox</h4>
+                  <p className="text-secondary-400">Receive encrypted messages at your @username from anyone without revealing their identity. Perfect for tips and whistleblowing.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Dead Man's Switch */}
+            <div className="bg-gradient-to-br from-[#0a0012]/80 to-[#1a0a2e]/80 backdrop-blur-sm border border-[#8338ec]/20 rounded-xl p-6 hover:border-[#8338ec]/40 transition-all duration-300">
+              <div className="flex items-start space-x-4">
+                <div className="text-4xl">⏰</div>
+                <div className="flex-1">
+                  <h4 className="text-xl font-bold text-white mb-2">Dead Man's Switch</h4>
+                  <p className="text-secondary-400">Schedule encrypted messages to auto-release if you don't check in. Ultimate insurance for whistleblowers and journalists.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Use Cases Section */}
       <div id="use-cases" className="py-24 bg-secondary-900/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

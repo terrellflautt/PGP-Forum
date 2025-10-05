@@ -94,6 +94,10 @@ exports.get = async (event) => {
     if (!result.Item) {
       return {
         statusCode: 404,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true
+        },
         body: JSON.stringify({ error: 'User not found' })
       };
     }
@@ -103,13 +107,20 @@ exports.get = async (event) => {
 
     return {
       statusCode: 200,
-      headers: { 'Access-Control-Allow-Origin': '*' },
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
+      },
       body: JSON.stringify({ userId: id, email, name, picture, pgpPublicKey, createdAt })
     };
   } catch (error) {
     console.error('Get user error:', error);
     return {
       statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
+      },
       body: JSON.stringify({ error: 'Failed to get user' })
     };
   }
