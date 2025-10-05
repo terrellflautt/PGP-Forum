@@ -36,6 +36,36 @@ exports.list = async (event) => {
   }
 };
 
+/**
+ * Validate that content is text-only (no media)
+ * Prevents tracking via images, EXIF metadata, etc.
+ */
+function validateTextOnly(content) {
+  // Check for image/video file extensions in URLs
+  const mediaExtensions = /\.(jpg|jpeg|png|gif|bmp|webp|svg|mp4|webm|avi|mov|mkv|flv|wmv|m4v|mpg|mpeg|3gp|pdf|zip|rar|7z|tar|gz)/i;
+  if (mediaExtensions.test(content)) {
+    return { valid: false, error: 'Media file links are not allowed in public posts. Text only.' };
+  }
+
+  // Check for base64 encoded images
+  if (/data:image\/(png|jpeg|jpg|gif|webp|svg\+xml);base64,/i.test(content)) {
+    return { valid: false, error: 'Embedded images are not allowed in public posts. Text only.' };
+  }
+
+  // Check for base64 encoded videos
+  if (/data:video\/(mp4|webm|ogg);base64,/i.test(content)) {
+    return { valid: false, error: 'Embedded videos are not allowed in public posts. Text only.' };
+  }
+
+  // Check for common image hosting domains
+  const imageHostingDomains = /(imgur\.com|imgbb\.com|postimages\.org|i\.redd\.it|pbs\.twimg\.com)\/[^\s]*\.(jpg|jpeg|png|gif|webp)/i;
+  if (imageHostingDomains.test(content)) {
+    return { valid: false, error: 'Image hosting links are not allowed. Text only.' };
+  }
+
+  return { valid: true };
+}
+
 // Create post
 exports.create = async (event) => {
   try {
@@ -47,6 +77,16 @@ exports.create = async (event) => {
       return {
         statusCode: 400,
         body: JSON.stringify({ error: 'Missing content' })
+      };
+    }
+
+    // Validate text-only content (privacy feature)
+    const validation = validateTextOnly(content);
+    if (!validation.valid) {
+      return {
+        statusCode: 400,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ error: validation.error })
       };
     }
 

@@ -29,6 +29,30 @@ exports.list = async (event) => {
       Limit: 100
     }).promise();
 
+    // Mark messages as delivered and set TTL for auto-delete
+    const currentTime = Math.floor(Date.now() / 1000);
+    const updatePromises = result.Items
+      .filter(msg => msg.toUserId === userId && !msg.delivered)
+      .map(msg =>
+        dynamodb.update({
+          TableName: MESSAGES_TABLE,
+          Key: {
+            conversationId: msg.conversationId,
+            timestamp: msg.timestamp
+          },
+          UpdateExpression: 'SET delivered = :true, #ttl = :ttl',
+          ExpressionAttributeNames: {
+            '#ttl': 'ttl'
+          },
+          ExpressionAttributeValues: {
+            ':true': true,
+            ':ttl': currentTime + 60 // Delete 60 seconds after delivery
+          }
+        }).promise()
+      );
+
+    await Promise.all(updatePromises);
+
     return {
       statusCode: 200,
       headers: { 'Access-Control-Allow-Origin': '*' },
@@ -58,6 +82,7 @@ exports.send = async (event) => {
 
     const conversationId = [fromUserId, toUserId].sort().join('#');
     const timestamp = Date.now();
+    const currentTimeSeconds = Math.floor(timestamp / 1000);
 
     const message = {
       conversationId,
@@ -66,7 +91,10 @@ exports.send = async (event) => {
       toUserId,
       encryptedContent, // PGP encrypted with recipient's public key
       encryptedSubject, // Optional encrypted subject
-      read: false
+      read: false,
+      delivered: false, // NEW: Track delivery status
+      ttl: currentTimeSeconds + (24 * 60 * 60), // NEW: Auto-delete after 24 hours if not delivered
+      expiresAt: timestamp + (24 * 60 * 60 * 1000) // NEW: Explicit expiration timestamp
     };
 
     await dynamodb.put({
