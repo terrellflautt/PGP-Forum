@@ -1,6 +1,6 @@
 # 🤖 Claude Instance Coordination
 
-**Last Updated**: October 5, 2025 20:50 UTC
+**Last Updated**: October 5, 2025 21:20 UTC (Instance #3 - Production Audit Complete)
 **Project**: SnapIT Forum - Zero-Knowledge Privacy Platform
 
 ---
@@ -36,13 +36,21 @@
 
 ### 🔄 Pending Changes (Uncommitted)
 ```
-Modified:
-- forum-app/src/components/LoginModal.tsx
-- serverless.yml
-- src/handlers/users.js
+Modified (6 files):
+- forum-app/src/App.tsx (removed unused imports)
+- forum-app/src/components/Header.tsx (cleanup)
+- forum-app/src/components/LoginModal.tsx (refactored OAuth)
+- forum-app/src/components/Messenger/ChatInterface.tsx (ESLint fixes)
+- forum-app/src/components/PublicProfile.tsx (minor updates)
+- forum-app/src/components/SettingsView.tsx (minor updates)
+- serverless.yml (added emailForwarder + S3 permissions)
 
-Untracked:
-- mcp-servers/ (new directory)
+Untracked (4 files):
+- NEXT-STEPS.md (task tracker)
+- PRODUCTION-AUDIT-OCT-5-2025.md (audit report)
+- ses-dns-records.json (SES config)
+- ses-receipt-rule.json (email rules)
+- src/handlers/emailForwarder.js (NEW Lambda)
 ```
 
 ---
@@ -60,8 +68,12 @@ Use **agents** and **MCP servers** to parallelize work:
 
 ### Current Priorities
 
-#### Priority 1: Verify Production Deployment ⚠️
-- [ ] Test https://forum.snapitsoftware.com (Google OAuth login)
+#### Priority 1: Verify Production Deployment ✅ DEPLOYED
+- [x] **CRITICAL FIX**: OAuth GSI permissions - FIXED and DEPLOYED at 21:14 UTC
+- [x] Backend redeployed (44 Lambda functions updated)
+- [x] Frontend rebuilt and deployed to S3
+- [x] CloudFront cache invalidated (IF3ZS23RIQPP86H4NLVDQFRJX6)
+- [ ] **TEST NOW**: https://forum.snapitsoftware.com (Google OAuth login)
 - [ ] Create test forum (verify free tier: 1 forum, 1500 users)
 - [ ] Send private message (verify PGP encryption + ephemeral delete)
 - [ ] Test Stripe checkout (Pro tier $29/month with real card)
