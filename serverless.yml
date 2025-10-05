@@ -17,9 +17,10 @@ provider:
     GOOGLE_CLIENT_ID: ${env:GOOGLE_CLIENT_ID}
     JWT_SECRET: ${env:JWT_SECRET}
     STRIPE_SECRET_KEY: ${env:STRIPE_SECRET_KEY}
-    STRIPE_PRO_PRICE_ID: ${env:STRIPE_PRO_PRICE_ID, 'price_pro_monthly'}
-    STRIPE_BUSINESS_PRICE_ID: ${env:STRIPE_BUSINESS_PRICE_ID, 'price_business_monthly'}
-    STRIPE_ENTERPRISE_PRICE_ID: ${env:STRIPE_ENTERPRISE_PRICE_ID, 'price_enterprise_monthly'}
+    STRIPE_PRO_PRICE_ID: ${env:STRIPE_PRO_PRICE_ID}
+    STRIPE_BUSINESS_PRICE_ID: ${env:STRIPE_BUSINESS_PRICE_ID}
+    STRIPE_ENTERPRISE_PRICE_ID: ${env:STRIPE_ENTERPRISE_PRICE_ID}
+    STRIPE_WEBHOOK_SECRET: ${env:STRIPE_WEBHOOK_SECRET}
 
   iam:
     role:
@@ -44,6 +45,17 @@ provider:
             - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.MESSAGES_TABLE}"
             - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.THREADS_TABLE}/index/*"
             - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.POSTS_TABLE}/index/*"
+
+package:
+  patterns:
+    - '!forum-app/**'
+    - '!.git/**'
+    - '!*.md'
+    - '!.env'
+    - '!webcrypto-pgp.js'
+    - '!webrtc-relay.js'
+    - '!deadman-switch.js'
+    - '!anonymous-inbox.js'
 
 functions:
   # Auth
@@ -489,4 +501,5 @@ resources:
           Enabled: true
 
 plugins:
+  - serverless-dotenv-plugin
   - serverless-offline

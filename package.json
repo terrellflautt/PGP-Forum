@@ -9,19 +9,25 @@
     "local": "serverless offline",
     "test": "jest"
   },
-  "keywords": ["forum", "serverless", "pgp", "multi-tenant"],
+  "keywords": [
+    "forum",
+    "serverless",
+    "pgp",
+    "multi-tenant"
+  ],
   "author": "SnapIT Software",
   "license": "MIT",
   "dependencies": {
     "aws-sdk": "^2.1691.0",
-    "jsonwebtoken": "^9.0.2",
     "google-auth-library": "^9.14.1",
+    "jsonwebtoken": "^9.0.2",
     "stripe": "^14.12.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "serverless": "^3.38.0",
-    "serverless-offline": "^13.3.3",
-    "jest": "^29.7.0"
+    "serverless-dotenv-plugin": "^6.0.0",
+    "serverless-offline": "^13.3.3"
   }
 }
