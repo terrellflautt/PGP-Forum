@@ -263,6 +263,59 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
               </div>
             </div>
           </div>
+
+          {/* New Products Row */}
+          <div className="grid md:grid-cols-2 gap-8 mt-8">
+            {/* SnapIT Polls */}
+            <div className="bg-gradient-to-br from-[#0a0012]/80 to-[#1a0a2e]/80 backdrop-blur-sm border border-[#ff006e]/20 rounded-xl p-6 hover:border-[#ff006e]/40 transition-all duration-300 group">
+              <div className="flex items-start space-x-4">
+                <div className="text-4xl">📊</div>
+                <div className="flex-1">
+                  <h4 className="text-xl font-bold text-white mb-2 flex items-center justify-between">
+                    SnapIT Polls
+                    <span className="text-xs bg-[#ff006e]/20 text-[#ff006e] px-3 py-1 rounded-full font-semibold border border-[#ff006e]/30">COMING SOON</span>
+                  </h4>
+                  <p className="text-secondary-400 mb-4">Create anonymous polls and surveys with real-time results. Perfect for community feedback and decision making.</p>
+                  <a
+                    href="https://polls.snapitsoftware.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center space-x-2 text-[#ff006e] hover:text-[#ff5eb3] transition-colors"
+                  >
+                    <span className="font-semibold">Learn More</span>
+                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* SnapIT Burn */}
+            <div className="bg-gradient-to-br from-[#0a0012]/80 to-[#1a0a2e]/80 backdrop-blur-sm border border-[#ff006e]/20 rounded-xl p-6 hover:border-[#ff006e]/40 transition-all duration-300 group">
+              <div className="flex items-start space-x-4">
+                <div className="text-4xl">🔥</div>
+                <div className="flex-1">
+                  <h4 className="text-xl font-bold text-white mb-2 flex items-center justify-between">
+                    SnapIT Burn
+                    <span className="text-xs bg-[#ff006e]/20 text-[#ff006e] px-3 py-1 rounded-full font-semibold border border-[#ff006e]/30">COMING SOON</span>
+                  </h4>
+                  <p className="text-secondary-400 mb-4">Share files that auto-delete after download or time limit. Secure, password-protected, temporary file sharing.</p>
+                  <a
+                    href="https://burn.snapitsoftware.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center space-x-2 text-[#ff006e] hover:text-[#ff5eb3] transition-colors"
+                  >
+                    <span className="font-semibold">Learn More</span>
+                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
