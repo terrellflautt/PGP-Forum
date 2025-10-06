@@ -76,7 +76,7 @@ export default function Header({ user, forum, onLogout }: HeaderProps) {
               className="w-10 h-10 rounded-full border-2 border-primary-500"
             />
             <div className="hidden md:block">
-              <p className="text-sm font-semibold text-secondary-900">{user?.name}</p>
+              <p className="text-sm font-semibold text-secondary-900">@{user?.username || user?.name}</p>
               <p className="text-xs text-secondary-500">{user?.email}</p>
             </div>
             <button

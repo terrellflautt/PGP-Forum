@@ -1,6 +1,6 @@
 // API Configuration
-// Production custom domain with professional branding
-export const API_BASE_URL = 'https://api.snapitsoftware.com';
+// Use direct API Gateway endpoint (CloudFront proxy has caching issues)
+export const API_BASE_URL = 'https://u25qbry7za.execute-api.us-east-1.amazonaws.com/prod';
 
 // Google OAuth Configuration
 export const GOOGLE_CLIENT_ID = '242648112266-iglul54tuis9mhucsp1pmpqg0a48l8i0.apps.googleusercontent.com';

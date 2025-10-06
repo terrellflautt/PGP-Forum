@@ -128,6 +128,14 @@ functions:
           method: post
           cors: true
 
+  registerWithEmail:
+    handler: src/handlers/auth.registerWithEmail
+    events:
+      - http:
+          path: auth/register
+          method: post
+          cors: true
+
   addBackupEmail:
     handler: src/handlers/auth.addBackupEmail
     events:

@@ -14,6 +14,7 @@ export default function UsernameSetup({ onComplete, userEmail, userName }: Usern
   const [error, setError] = useState('');
   const [suggestedUsername, setSuggestedUsername] = useState('');
   const [showingProgress, setShowingProgress] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Generate smart username suggestion from Google name
   useEffect(() => {
@@ -106,8 +107,19 @@ export default function UsernameSetup({ onComplete, userEmail, userName }: Usern
   const handleSubmit = async () => {
     if (!available || !username) return;
 
+    setIsSubmitting(true);
+    setError('');
+
     try {
       const token = localStorage.getItem('token');
+
+      if (!token) {
+        setError('Session expired. Please sign in again.');
+        localStorage.clear();
+        window.location.reload();
+        return;
+      }
+
       const response = await fetch(`${API_BASE_URL}/users/me/username`, {
         method: 'PUT',
         headers: {
@@ -121,6 +133,7 @@ export default function UsernameSetup({ onComplete, userEmail, userName }: Usern
         onComplete(username);
       } else if (response.status === 401 || response.status === 403) {
         // Token is invalid/expired - clear it and force re-login
+        setError('Session expired. Please sign in again.');
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         setError('Your session has expired. Please refresh the page and sign in again.');
@@ -128,7 +141,10 @@ export default function UsernameSetup({ onComplete, userEmail, userName }: Usern
         setError('Failed to set username. Please try again.');
       }
     } catch (err) {
+      console.error('Username submission error:', err);
       setError('An error occurred. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

@@ -231,6 +231,214 @@ async function getUserByEmail(email) {
   return result.Items && result.Items[0];
 }
 
+// Register with email/password (ProtonMail, GMX, etc.)
+exports.registerWithEmail = async (event) => {
+  try {
+    const { email, password, name } = JSON.parse(event.body);
+
+    // Validate inputs
+    if (!email || !password || !name) {
+      return {
+        statusCode: 400,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ error: 'Email, password, and name required' })
+      };
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return {
+        statusCode: 400,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ error: 'Invalid email address' })
+      };
+    }
+
+    // Validate password strength (minimum 12 chars, must have upper, lower, number, special)
+    if (password.length < 12) {
+      return {
+        statusCode: 400,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ error: 'Password must be at least 12 characters' })
+      };
+    }
+
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+
+    if (!hasUpperCase || !hasLowerCase || !hasNumber || !hasSpecial) {
+      return {
+        statusCode: 400,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({
+          error: 'Password must contain uppercase, lowercase, number, and special character'
+        })
+      };
+    }
+
+    // Check if email already exists
+    const existingUser = await getUserByEmail(email);
+    if (existingUser) {
+      return {
+        statusCode: 409,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ error: 'Email already registered' })
+      };
+    }
+
+    // Generate unique userId
+    const userId = `email_${uuidv4()}`;
+
+    // Hash password
+    const passwordHash = await hashPassword(password);
+
+    // Generate email verification token
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const expiresAt = Date.now() + (24 * 60 * 60 * 1000); // 24 hours
+
+    // Create user (emailVerified = false until verified)
+    const user = {
+      userId,
+      email,
+      name,
+      passwordHash,
+      emailVerified: false,
+      emailVerificationToken: verificationToken,
+      emailVerificationExpiry: expiresAt,
+      createdAt: Date.now(),
+      pgpPublicKey: null,
+      username: null,
+      picture: null,
+      authProvider: 'email'
+    };
+
+    await dynamodb.put({
+      TableName: USERS_TABLE,
+      Item: user,
+      ConditionExpression: 'attribute_not_exists(userId)'
+    }).promise();
+
+    // Send verification email
+    await ses.sendEmail({
+      Source: 'SnapIT Forums <noreply@snapitsoftware.com>',
+      Destination: { ToAddresses: [email] },
+      Message: {
+        Subject: { Data: '🔐 Verify your SnapIT Forums account' },
+        Body: {
+          Html: {
+            Data: `
+              <!DOCTYPE html>
+              <html>
+              <head>
+                <style>
+                  body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                  .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                  .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                  .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+                  .button { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; }
+                  .warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 4px; }
+                  .footer { text-align: center; color: #6b7280; font-size: 12px; margin-top: 30px; }
+                </style>
+              </head>
+              <body>
+                <div class="container">
+                  <div class="header">
+                    <h1>🔐 Welcome to SnapIT Forums</h1>
+                    <p>Zero-Knowledge Privacy Platform</p>
+                  </div>
+                  <div class="content">
+                    <h2>Hi ${name}!</h2>
+                    <p>Thank you for joining SnapIT Forums. Please verify your email address to activate your account:</p>
+
+                    <center>
+                      <a href="https://forum.snapitsoftware.com/verify-email?token=${verificationToken}" class="button">
+                        Verify Email Address
+                      </a>
+                    </center>
+
+                    <p><strong>What happens after verification:</strong></p>
+                    <ul>
+                      <li>✅ Choose your unique @username</li>
+                      <li>✅ Generate your PGP encryption keypair</li>
+                      <li>✅ Get your personal forum</li>
+                      <li>✅ Start sending encrypted messages</li>
+                    </ul>
+
+                    <div class="warning">
+                      <strong>⚠️ Important Security Notice:</strong><br>
+                      Your password encrypts your PGP private key. <strong>If you lose your password, your encrypted data CANNOT be recovered.</strong> We use zero-knowledge encryption - we never see your password or private key.
+                    </div>
+
+                    <p>This verification link expires in 24 hours.</p>
+
+                    <p>If you didn't create this account, you can safely ignore this email.</p>
+
+                    <div class="footer">
+                      <p>© 2025 SnapIT Software | <a href="https://snapitsoftware.com">snapitsoftware.com</a></p>
+                      <p>End-to-end encrypted. Zero-knowledge. Anonymous by default.</p>
+                    </div>
+                  </div>
+                </div>
+              </body>
+              </html>
+            `
+          },
+          Text: {
+            Data: `
+              Welcome to SnapIT Forums!
+
+              Hi ${name},
+
+              Thank you for joining SnapIT Forums. Please verify your email address:
+
+              https://forum.snapitsoftware.com/verify-email?token=${verificationToken}
+
+              This link expires in 24 hours.
+
+              IMPORTANT: Your password encrypts your PGP private key. If you lose your password, your encrypted data CANNOT be recovered.
+
+              If you didn't create this account, ignore this email.
+
+              - SnapIT Software
+              https://snapitsoftware.com
+            `
+          }
+        }
+      }
+    }).promise();
+
+    return {
+      statusCode: 201,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({
+        success: true,
+        message: 'Account created! Please check your email to verify your account.',
+        userId: userId
+      })
+    };
+  } catch (error) {
+    console.error('Email registration error:', error);
+
+    // Handle duplicate key error
+    if (error.code === 'ConditionalCheckFailedException') {
+      return {
+        statusCode: 409,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({ error: 'Account already exists' })
+      };
+    }
+
+    return {
+      statusCode: 500,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({ error: 'Failed to create account' })
+    };
+  }
+};
+
 // JWT Authorizer
 exports.authorizer = async (event) => {
   try {
@@ -427,9 +635,10 @@ exports.verifyEmail = async (event) => {
 
     if (!token) {
       return {
-        statusCode: 400,
-        headers: { 'Access-Control-Allow-Origin': '*' },
-        body: JSON.stringify({ error: 'Token required' })
+        statusCode: 302,
+        headers: {
+          Location: 'https://forum.snapitsoftware.com/?error=missing_token'
+        }
       };
     }
 
@@ -445,9 +654,10 @@ exports.verifyEmail = async (event) => {
 
     if (users.Items.length === 0) {
       return {
-        statusCode: 400,
-        headers: { 'Access-Control-Allow-Origin': '*' },
-        body: JSON.stringify({ error: 'Invalid or expired token' })
+        statusCode: 302,
+        headers: {
+          Location: 'https://forum.snapitsoftware.com/?error=invalid_token'
+        }
       };
     }
 
@@ -463,17 +673,32 @@ exports.verifyEmail = async (event) => {
       }
     }).promise();
 
+    // Create user's free forum (if email registration user)
+    if (user.authProvider === 'email') {
+      await createUserForum(user);
+    }
+
+    // Generate JWT for auto-login
+    const jwtToken = jwt.sign(
+      { userId: user.userId, email: user.email },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    // Redirect to forum with token
     return {
-      statusCode: 200,
-      headers: { 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ success: true, message: 'Email verified successfully' })
+      statusCode: 302,
+      headers: {
+        Location: `https://forum.snapitsoftware.com/?token=${jwtToken}&verified=true`
+      }
     };
   } catch (error) {
     console.error('Verify email error:', error);
     return {
-      statusCode: 500,
-      headers: { 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ error: 'Failed to verify email' })
+      statusCode: 302,
+      headers: {
+        Location: 'https://forum.snapitsoftware.com/?error=verification_failed'
+      }
     };
   }
 };
@@ -568,41 +793,39 @@ exports.emailPasswordLogin = async (event) => {
       };
     }
 
-    // Find user by backup email
-    const users = await dynamodb.scan({
-      TableName: USERS_TABLE,
-      FilterExpression: 'backupEmail = :email AND emailVerified = :true',
-      ExpressionAttributeValues: {
-        ':email': email,
-        ':true': true
-      }
-    }).promise();
+    // Find user by primary email OR backup email
+    let user;
 
-    if (users.Items.length === 0) {
+    // First try primary email (for email registration users)
+    const primaryEmailResult = await getUserByEmail(email);
+    if (primaryEmailResult && primaryEmailResult.emailVerified && primaryEmailResult.passwordHash) {
+      user = primaryEmailResult;
+    } else {
+      // Try backup email (for Google OAuth users who added password)
+      const backupEmailResult = await dynamodb.scan({
+        TableName: USERS_TABLE,
+        FilterExpression: 'backupEmail = :email AND emailVerified = :true',
+        ExpressionAttributeValues: {
+          ':email': email,
+          ':true': true
+        }
+      }).promise();
+
+      if (backupEmailResult.Items.length > 0) {
+        user = backupEmailResult.Items[0];
+      }
+    }
+
+    if (!user) {
       return {
         statusCode: 401,
         headers: { 'Access-Control-Allow-Origin': '*' },
         body: JSON.stringify({ error: 'Invalid email or password' })
       };
     }
-
-    const user = users.Items[0];
 
     // Verify password
     if (!user.passwordHash || !(await verifyPassword(password, user.passwordHash))) {
-      return {
-        statusCode: 401,
-        headers: { 'Access-Control-Allow-Origin': '*' },
-        body: JSON.stringify({ error: 'Invalid email or password' })
-      };
-    }
-
-    // Decrypt private PGP key
-    let privateKey;
-    try {
-      privateKey = decryptPrivateKey(user.encryptedPrivateKey, password, user.salt);
-    } catch (decryptError) {
-      console.error('Decryption error:', decryptError);
       return {
         statusCode: 401,
         headers: { 'Access-Control-Allow-Origin': '*' },
@@ -617,7 +840,7 @@ exports.emailPasswordLogin = async (event) => {
       { expiresIn: '7d' }
     );
 
-    // Return user data and decrypted private key (client-side only!)
+    // Return user data
     return {
       statusCode: 200,
       headers: { 'Access-Control-Allow-Origin': '*' },
@@ -629,9 +852,9 @@ exports.emailPasswordLogin = async (event) => {
           email: user.email,
           username: user.username,
           name: user.name,
+          picture: user.picture,
           pgpPublicKey: user.pgpPublicKey
-        },
-        privateKey: privateKey // Client stores this in memory only
+        }
       })
     };
   } catch (error) {
