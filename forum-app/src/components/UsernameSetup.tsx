@@ -51,7 +51,7 @@ export default function UsernameSetup({ onComplete, userEmail, userName }: Usern
     checkAvailability(random);
   };
 
-  const checkAvailability = async (usernameToCheck: string, retries = 3) => {
+  const checkAvailability = async (usernameToCheck: string, retries = 3): Promise<void> => {
     if (!usernameToCheck || usernameToCheck.length < 3) {
       setAvailable(null);
       setError('Username must be at least 3 characters');
