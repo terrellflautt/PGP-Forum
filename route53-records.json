@@ -1,0 +1,80 @@
+{
+  "Changes": [
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "snapitsoftware.com",
+        "Type": "A",
+        "AliasTarget": {
+          "HostedZoneId": "Z2FDTNDATAQYW2",
+          "DNSName": "d2vn5kjriuo02i.cloudfront.net",
+          "EvaluateTargetHealth": false
+        }
+      }
+    },
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "www.snapitsoftware.com",
+        "Type": "A",
+        "AliasTarget": {
+          "HostedZoneId": "Z2FDTNDATAQYW2",
+          "DNSName": "d2vn5kjriuo02i.cloudfront.net",
+          "EvaluateTargetHealth": false
+        }
+      }
+    },
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "forum.snapitsoftware.com",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "d3jn3i879jxit2.cloudfront.net"
+          }
+        ]
+      }
+    },
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "polls.snapitsoftware.com",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "7nbqiasg8i.execute-api.us-east-1.amazonaws.com"
+          }
+        ]
+      }
+    },
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "poll.snapitsoftware.com",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "7nbqiasg8i.execute-api.us-east-1.amazonaws.com"
+          }
+        ]
+      }
+    },
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "burn.snapitsoftware.com",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "gavcsyy3ka.execute-api.us-east-1.amazonaws.com"
+          }
+        ]
+      }
+    }
+  ]
+}

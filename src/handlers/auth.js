@@ -125,8 +125,14 @@ exports.googleCallback = async (event) => {
         Item: user
       }).promise();
 
+      // Auto-join SnapIT Community forum
+      await joinCommunityForum(user);
+
       // Create user's free forum
       await createUserForum(user);
+    } else {
+      // Existing user - ensure they're in community forum
+      await joinCommunityForum(user);
     }
 
     // Generate JWT
@@ -156,6 +162,51 @@ exports.googleCallback = async (event) => {
 };
 
 // Create user's free forum
+// Auto-join user to SnapIT Community forum
+async function joinCommunityForum(user) {
+  const COMMUNITY_FORUM_ID = 'snapit-community';
+  const timestamp = Date.now();
+
+  try {
+    // Check if already a member
+    const existing = await dynamodb.get({
+      TableName: FORUM_MEMBERS_TABLE,
+      Key: {
+        forumIdUserId: `${COMMUNITY_FORUM_ID}#${user.userId}`
+      }
+    }).promise();
+
+    if (!existing.Item) {
+      // Add user as member
+      await dynamodb.put({
+        TableName: FORUM_MEMBERS_TABLE,
+        Item: {
+          forumIdUserId: `${COMMUNITY_FORUM_ID}#${user.userId}`,
+          forumId: COMMUNITY_FORUM_ID,
+          userId: user.userId,
+          role: 'member',
+          joinedAt: timestamp
+        }
+      }).promise();
+
+      // Increment forum user count
+      await dynamodb.update({
+        TableName: FORUMS_TABLE,
+        Key: { forumId: COMMUNITY_FORUM_ID },
+        UpdateExpression: 'ADD userCount :inc',
+        ExpressionAttributeValues: {
+          ':inc': 1
+        }
+      }).promise();
+
+      console.log(`User ${user.userId} auto-joined SnapIT Community`);
+    }
+  } catch (error) {
+    console.error('Failed to auto-join community forum:', error);
+    // Don't fail signup if community join fails
+  }
+}
+
 async function createUserForum(user) {
   const forumId = user.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '-');
   const timestamp = Date.now();
@@ -672,6 +723,9 @@ exports.verifyEmail = async (event) => {
         ':true': true
       }
     }).promise();
+
+    // Auto-join SnapIT Community forum
+    await joinCommunityForum(user);
 
     // Create user's free forum (if email registration user)
     if (user.authProvider === 'email') {

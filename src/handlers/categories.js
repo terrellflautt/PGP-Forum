@@ -8,11 +8,11 @@ exports.list = async (event) => {
   try {
     const { forumId } = event.pathParameters;
 
-    const result = await dynamodb.query({
+    const result = await dynamodb.scan({
       TableName: CATEGORIES_TABLE,
-      KeyConditionExpression: 'forumIdCategoryId BEGINS_WITH :fid',
+      FilterExpression: 'forumId = :fid',
       ExpressionAttributeValues: {
-        ':fid': `${forumId}#`
+        ':fid': forumId
       }
     }).promise();
 

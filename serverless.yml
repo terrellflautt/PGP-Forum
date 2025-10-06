@@ -12,6 +12,8 @@ provider:
       burstLimit: 200    # Max concurrent requests
       rateLimit: 100     # Requests per second
     metrics: true
+    # Ensure CORS works with custom authorizers
+    shouldStartNameWithService: true
 
   # Usage plans for tier-based limits
   usagePlan:
@@ -365,7 +367,16 @@ functions:
       - http:
           path: users/me/username
           method: put
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
           authorizer:
             name: authorizer
             resultTtlInSeconds: 300

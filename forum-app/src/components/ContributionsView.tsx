@@ -44,7 +44,7 @@ export default function ContributionsView({ user }: ContributionsViewProps) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('forum_jwt')}`,
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify({
           amount: Math.round(finalAmount * 100), // Convert to cents
