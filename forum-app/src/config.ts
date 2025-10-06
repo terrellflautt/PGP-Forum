@@ -1,6 +1,6 @@
 // API Configuration
-// Using direct API Gateway URL (custom domain api.snapitsoftware.com needs CloudFront/API Gateway mapping)
-export const API_BASE_URL = 'https://u25qbry7za.execute-api.us-east-1.amazonaws.com/prod';
+// Production custom domain with professional branding
+export const API_BASE_URL = 'https://api.snapitsoftware.com';
 
 // Google OAuth Configuration
 export const GOOGLE_CLIENT_ID = '242648112266-iglul54tuis9mhucsp1pmpqg0a48l8i0.apps.googleusercontent.com';

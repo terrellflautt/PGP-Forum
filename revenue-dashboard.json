@@ -1,0 +1,164 @@
+{
+  "widgets": [
+    {
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "SnapIT/Revenue", "ConversionCount", { "stat": "Sum", "label": "Total Conversions" } ]
+        ],
+        "period": 86400,
+        "stat": "Sum",
+        "region": "us-east-1",
+        "title": "Daily Conversions",
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        }
+      }
+    },
+    {
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "SnapIT/Revenue", "MRR", { "stat": "Sum" } ]
+        ],
+        "period": 3600,
+        "stat": "Sum",
+        "region": "us-east-1",
+        "title": "Monthly Recurring Revenue (MRR)",
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "label": "USD"
+          }
+        },
+        "annotations": {
+          "horizontal": [
+            {
+              "label": "Goal: $1,000",
+              "value": 1000
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "SnapIT/Revenue", "ConversionCount", { "id": "m1", "stat": "Sum", "visible": false } ],
+          [ ".", "SignupCount", { "id": "m2", "stat": "Sum", "visible": false } ],
+          [ { "expression": "(m1/m2)*100", "label": "Conversion Rate %", "id": "e1" } ]
+        ],
+        "period": 86400,
+        "stat": "Average",
+        "region": "us-east-1",
+        "title": "Conversion Rate",
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "max": 10,
+            "label": "Percent"
+          }
+        }
+      }
+    },
+    {
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "SnapIT/Revenue", "ConversionCount", { "stat": "Sum" } ],
+          [ ".", "ChurnCount", { "stat": "Sum" } ]
+        ],
+        "period": 86400,
+        "stat": "Sum",
+        "region": "us-east-1",
+        "title": "Subscribers: New vs Churned",
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        }
+      }
+    },
+    {
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "SnapIT/Revenue", "ConversionCount", { "stat": "Sum" }, { "dimensions": { "Tier": "pro" } } ],
+          [ "...", { "dimensions": { "Tier": "business" } } ],
+          [ "...", { "dimensions": { "Tier": "enterprise" } } ]
+        ],
+        "period": 2592000,
+        "stat": "Sum",
+        "region": "us-east-1",
+        "title": "Subscribers by Tier",
+        "setPeriodToTimeRange": true,
+        "view": "pie"
+      }
+    },
+    {
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "SnapIT/Revenue", "Revenue", { "stat": "Sum" } ]
+        ],
+        "period": 86400,
+        "stat": "Sum",
+        "region": "us-east-1",
+        "title": "Daily Revenue",
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "label": "USD"
+          }
+        }
+      }
+    },
+    {
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "SnapIT/Revenue", "PaymentFailed", { "stat": "Sum" } ]
+        ],
+        "period": 86400,
+        "stat": "Sum",
+        "region": "us-east-1",
+        "title": "Payment Failures",
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        }
+      }
+    },
+    {
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "SnapIT/Revenue", "CheckoutCompleted", { "stat": "Sum" } ]
+        ],
+        "period": 86400,
+        "stat": "Sum",
+        "region": "us-east-1",
+        "title": "Checkouts Completed",
+        "yAxis": {
+          "left": {
+            "min": 0
+          }
+        }
+      }
+    },
+    {
+      "type": "log",
+      "properties": {
+        "query": "SOURCE '/aws/lambda/snapit-forum-api-prod-stripeWebhook'\n| fields @timestamp, @message\n| filter @message like /SUBSCRIPTION CREATED/\n| sort @timestamp desc\n| limit 20",
+        "region": "us-east-1",
+        "stacked": false,
+        "title": "Recent Subscriptions",
+        "view": "table"
+      }
+    }
+  ]
+}

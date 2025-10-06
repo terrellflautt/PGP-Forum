@@ -1,15 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../config';
 
 interface UsernameSetupProps {
   onComplete: (username: string) => void;
+  userEmail?: string;
+  userName?: string;
 }
 
-export default function UsernameSetup({ onComplete }: UsernameSetupProps) {
+export default function UsernameSetup({ onComplete, userEmail, userName }: UsernameSetupProps) {
   const [username, setUsername] = useState('');
   const [checking, setChecking] = useState(false);
   const [available, setAvailable] = useState<boolean | null>(null);
   const [error, setError] = useState('');
+  const [suggestedUsername, setSuggestedUsername] = useState('');
+  const [showingProgress, setShowingProgress] = useState(true);
+
+  // Generate smart username suggestion from Google name
+  useEffect(() => {
+    if (userName) {
+      const suggested = userName
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .substring(0, 20);
+      setSuggestedUsername(suggested);
+      // Auto-fill with suggestion
+      setUsername(suggested);
+      // Auto-check availability
+      checkAvailability(suggested);
+    }
+
+    // Hide progress indicator after 2 seconds
+    setTimeout(() => setShowingProgress(false), 2000);
+  }, [userName]);
 
   const generateRandomUsername = () => {
     const adjectives = ['secure', 'anonymous', 'private', 'encrypted', 'hidden', 'shadow', 'ghost', 'silent', 'stealth', 'cipher'];
@@ -28,7 +51,7 @@ export default function UsernameSetup({ onComplete }: UsernameSetupProps) {
     checkAvailability(random);
   };
 
-  const checkAvailability = async (usernameToCheck: string) => {
+  const checkAvailability = async (usernameToCheck: string, retries = 3) => {
     if (!usernameToCheck || usernameToCheck.length < 3) {
       setAvailable(null);
       setError('Username must be at least 3 characters');
@@ -47,12 +70,24 @@ export default function UsernameSetup({ onComplete }: UsernameSetupProps) {
     setError('');
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/users/check-username?username=${encodeURIComponent(usernameToCheck)}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
+      const response = await fetch(`${API_BASE_URL}/users/check-username?username=${encodeURIComponent(usernameToCheck)}`);
+
+      // Handle cold start or temporary errors with retry
+      if (response.status === 503 || response.status === 502) {
+        if (retries > 0) {
+          // Wait 1 second and retry
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          return checkAvailability(usernameToCheck, retries - 1);
+        } else {
+          setError('Service temporarily unavailable. Please try again in a moment.');
+          setChecking(false);
+          return;
         }
-      });
+      }
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
 
       const data = await response.json();
       setAvailable(data.available);
@@ -61,7 +96,8 @@ export default function UsernameSetup({ onComplete }: UsernameSetupProps) {
         setError('This username is already taken');
       }
     } catch (err) {
-      setError('Failed to check username availability');
+      console.error('Username check error:', err);
+      setError('Unable to check availability. Please try again.');
     } finally {
       setChecking(false);
     }
@@ -83,6 +119,11 @@ export default function UsernameSetup({ onComplete }: UsernameSetupProps) {
 
       if (response.ok) {
         onComplete(username);
+      } else if (response.status === 401 || response.status === 403) {
+        // Token is invalid/expired - clear it and force re-login
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setError('Your session has expired. Please refresh the page and sign in again.');
       } else {
         setError('Failed to set username. Please try again.');
       }
@@ -91,19 +132,63 @@ export default function UsernameSetup({ onComplete }: UsernameSetupProps) {
     }
   };
 
+  // Quick suggestion button
+  const handleUseSuggestion = () => {
+    if (suggestedUsername) {
+      setUsername(suggestedUsername);
+      checkAvailability(suggestedUsername);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fade-in">
       <div className="bg-white rounded-3xl p-8 max-w-2xl w-full mx-4 shadow-2xl animate-slide-up">
+        {/* Progress Indicator */}
+        {showingProgress && (
+          <div className="mb-6 bg-primary-50 border border-primary-200 rounded-xl p-4">
+            <div className="flex items-center space-x-3">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  2
+                </div>
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-primary-900">Step 2 of 2: Choose username</p>
+                <div className="w-full bg-primary-200 rounded-full h-2 mt-2">
+                  <div className="bg-gradient-to-r from-primary-500 to-primary-600 h-2 rounded-full" style={{ width: '100%' }}></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl flex items-center justify-center mx-auto mb-4 transform hover:rotate-12 transition-transform duration-300">
             <span className="text-white text-4xl">@</span>
           </div>
           <h2 className="text-3xl font-bold text-secondary-900 mb-2">Choose Your Username</h2>
           <p className="text-secondary-600">
-            This will be your public identifier for receiving anonymous messages
+            Almost done! This will be your public identifier for receiving anonymous messages
           </p>
         </div>
+
+        {/* Smart Suggestion Banner */}
+        {suggestedUsername && username === suggestedUsername && (
+          <div className="mb-6 bg-green-50 border border-green-200 rounded-xl p-4 animate-fade-in">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <div>
+                  <p className="text-sm font-semibold text-green-900">We pre-filled a suggestion for you</p>
+                  <p className="text-xs text-green-700">Based on your name: {userName}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Username input */}
         <div className="mb-6">
@@ -201,23 +286,41 @@ export default function UsernameSetup({ onComplete }: UsernameSetupProps) {
         </div>
 
         {/* Actions */}
-        <div className="flex space-x-3">
+        <div className="flex flex-col space-y-3">
           <button
             onClick={handleSubmit}
             disabled={!available || !username}
-            className="flex-1 py-3 px-6 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-semibold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 active:scale-95"
+            className="w-full py-4 px-6 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-bold text-lg hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center justify-center space-x-2"
           >
-            Continue
+            {available && username ? (
+              <>
+                <span>Continue to Your Forum</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </>
+            ) : (
+              <span>Enter a valid username to continue</span>
+            )}
           </button>
+
+          {/* Character counter */}
+          {username && (
+            <p className="text-xs text-center text-secondary-500">
+              {username.length} characters {username.length < 3 && '(minimum 3 required)'}
+            </p>
+          )}
         </div>
 
-        {/* Skip option (optional - only if you want to allow it) */}
-        {/* <button
-          onClick={() => onComplete('')}
-          className="w-full mt-3 text-sm text-secondary-500 hover:text-secondary-700"
-        >
-          Skip for now
-        </button> */}
+        {/* Estimated time remaining */}
+        <div className="mt-6 text-center">
+          <p className="text-sm text-secondary-500">
+            <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Less than 30 seconds remaining
+          </p>
+        </div>
       </div>
     </div>
   );

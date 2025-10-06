@@ -9,10 +9,15 @@ import SettingsView from './components/SettingsView';
 import LoginModal from './components/LoginModal';
 import LandingPage from './components/LandingPage';
 import UsernameSetup from './components/UsernameSetup';
+import WelcomeOnboarding from './components/WelcomeOnboarding';
+import CelebrationModal from './components/CelebrationModal';
 import PublicProfile from './components/PublicProfile';
 import ChatInterface from './components/Messenger/ChatInterface';
 import ContributionsView from './components/ContributionsView';
 import ResetPasswordView from './components/ResetPasswordView';
+import InstallPrompt from './components/InstallPrompt';
+import OfflineIndicator from './components/OfflineIndicator';
+import { ToastProvider } from './contexts/ToastContext';
 
 type View = 'forums' | 'messenger' | 'settings' | 'anonymous-inbox' | 'deadman' | 'contributions';
 
@@ -23,6 +28,9 @@ function App() {
   const [user, setUser] = useState<any>(null);
   const [needsUsername, setNeedsUsername] = useState(false);
   const [publicProfileUsername, setPublicProfileUsername] = useState<string | null>(null);
+  const [showWelcomeOnboarding, setShowWelcomeOnboarding] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebrationType, setCelebrationType] = useState<'username' | 'first-message' | 'first-thread' | 'welcome'>('username');
 
   useEffect(() => {
     // Check for password reset route first
@@ -50,9 +58,18 @@ function App() {
         const decoded = JSON.parse(jsonPayload);
         const userId = decoded.userId;
 
-        // Fetch full user data
-        fetch(`${API_BASE_URL}/users/${userId}`)
-          .then(res => res.json())
+        // Fetch full user data with auth header
+        fetch(`${API_BASE_URL}/users/me`, {
+          headers: {
+            'Authorization': `Bearer ${tokenFromUrl}`
+          }
+        })
+          .then(res => {
+            if (!res.ok) {
+              throw new Error(`Failed to fetch user: ${res.status}`);
+            }
+            return res.json();
+          })
           .then(userData => {
             setIsLoggedIn(true);
             setUser(userData);
@@ -69,6 +86,8 @@ function App() {
           .catch(err => {
             console.error('Failed to fetch user data:', err);
             localStorage.removeItem('token');
+            // Force re-login on error
+            setShowLoginModal(true);
           });
       } catch (err) {
         console.error('Failed to decode token:', err);
@@ -158,12 +177,51 @@ function App() {
     return (
       <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
         <UsernameSetup
+          userName={user?.name}
+          userEmail={user?.email}
           onComplete={(username: string) => {
             const updatedUser = { ...user, username };
             setUser(updatedUser);
             localStorage.setItem('user', JSON.stringify(updatedUser));
             setNeedsUsername(false);
+
+            // Show celebration modal
+            setCelebrationType('username');
+            setShowCelebration(true);
+
+            // Check if user has seen onboarding
+            const hasSeenOnboarding = localStorage.getItem('onboarding_completed');
+            if (!hasSeenOnboarding) {
+              // Show welcome onboarding after celebration
+              setTimeout(() => {
+                setShowCelebration(false);
+                setShowWelcomeOnboarding(true);
+              }, 4000);
+            }
           }}
+        />
+        {showCelebration && (
+          <CelebrationModal
+            type={celebrationType}
+            username={user?.username}
+            onClose={() => setShowCelebration(false)}
+            onNextAction={() => {
+              setShowCelebration(false);
+              setShowWelcomeOnboarding(true);
+            }}
+          />
+        )}
+      </GoogleOAuthProvider>
+    );
+  }
+
+  // Welcome onboarding for first-time users
+  if (showWelcomeOnboarding) {
+    return (
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+        <WelcomeOnboarding
+          userName={user?.name || ''}
+          onComplete={() => setShowWelcomeOnboarding(false)}
         />
       </GoogleOAuthProvider>
     );
@@ -186,25 +244,31 @@ function App() {
 
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <div className="App min-h-screen bg-secondary-50">
-        {isLoggedIn && (
-          <>
-            <Header user={user} forum={null} onLogout={handleLogout} />
-            <Sidebar currentView={currentView} onViewChange={setCurrentView as any} forum={null} />
-          </>
-        )}
+      <ToastProvider>
+        <div className="App min-h-screen bg-secondary-50">
+          {isLoggedIn && (
+            <>
+              <Header user={user} forum={null} onLogout={handleLogout} />
+              <Sidebar currentView={currentView} onViewChange={setCurrentView as any} forum={null} />
+            </>
+          )}
 
-        <main className={isLoggedIn ? '' : ''}>
-          {renderView()}
-        </main>
+          <main className={isLoggedIn ? '' : ''}>
+            {renderView()}
+          </main>
 
-        {showLoginModal && (
-          <LoginModal
-            onLogin={handleLogin}
-            onClose={() => setShowLoginModal(false)}
-          />
-        )}
-      </div>
+          {showLoginModal && (
+            <LoginModal
+              onLogin={handleLogin}
+              onClose={() => setShowLoginModal(false)}
+            />
+          )}
+
+          {/* PWA Components */}
+          <InstallPrompt />
+          <OfflineIndicator />
+        </div>
+      </ToastProvider>
     </GoogleOAuthProvider>
   );
 }

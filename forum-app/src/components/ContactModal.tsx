@@ -119,11 +119,14 @@ export default function ContactModal({ onClose }: ContactModalProps) {
                 id="contact-name"
                 name="name"
                 type="text"
+                autoComplete="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                autoFocus
                 className="w-full px-4 py-3 bg-[#0a0012]/50 border border-[#ff006e]/20 text-white placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff006e]/50 focus:border-[#ff006e] transition-all duration-300"
                 placeholder="John Doe"
+                style={{ fontSize: '16px' }}
               />
             </div>
 
@@ -135,11 +138,13 @@ export default function ContactModal({ onClose }: ContactModalProps) {
                 id="contact-email"
                 name="email"
                 type="email"
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full px-4 py-3 bg-[#0a0012]/50 border border-[#ff006e]/20 text-white placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff006e]/50 focus:border-[#ff006e] transition-all duration-300"
                 placeholder="you@example.com"
+                style={{ fontSize: '16px' }}
               />
             </div>
           </div>
@@ -157,6 +162,7 @@ export default function ContactModal({ onClose }: ContactModalProps) {
               required
               className="w-full px-4 py-3 bg-[#0a0012]/50 border border-[#ff006e]/20 text-white placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff006e]/50 focus:border-[#ff006e] transition-all duration-300"
               placeholder="How can we help?"
+              style={{ fontSize: '16px' }}
             />
           </div>
 
@@ -173,6 +179,7 @@ export default function ContactModal({ onClose }: ContactModalProps) {
               rows={6}
               className="w-full px-4 py-3 bg-[#0a0012]/50 border border-[#ff006e]/20 text-white placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff006e]/50 focus:border-[#ff006e] transition-all duration-300 resize-none"
               placeholder="Tell us what's on your mind..."
+              style={{ fontSize: '16px' }}
             />
           </div>
 
@@ -192,7 +199,7 @@ export default function ContactModal({ onClose }: ContactModalProps) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full px-6 py-4 bg-gradient-to-r from-[#ff006e] to-[#8338ec] hover:from-[#ff1a7f] hover:to-[#9145ff] text-white text-lg font-semibold rounded-xl shadow-lg shadow-[#ff006e]/30 hover:shadow-2xl hover:shadow-[#ff006e]/50 transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            className="w-full px-6 py-4 min-h-[52px] bg-gradient-to-r from-[#ff006e] to-[#8338ec] hover:from-[#ff1a7f] hover:to-[#9145ff] text-white text-lg font-semibold rounded-xl shadow-lg shadow-[#ff006e]/30 hover:shadow-2xl hover:shadow-[#ff006e]/50 transform hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
             {isSubmitting ? (
               <span className="flex items-center justify-center space-x-2">

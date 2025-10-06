@@ -6,6 +6,22 @@ provider:
   region: us-east-1
   stage: ${opt:stage, 'prod'}
 
+  # API Gateway throttling (rate limiting)
+  apiGateway:
+    throttle:
+      burstLimit: 200    # Max concurrent requests
+      rateLimit: 100     # Requests per second
+    metrics: true
+
+  # Usage plans for tier-based limits
+  usagePlan:
+    quota:
+      limit: 100000      # 100K requests per month for free
+      period: MONTH
+    throttle:
+      burstLimit: 200
+      rateLimit: 100
+
   environment:
     FORUMS_TABLE: ${self:service}-forums-${self:provider.stage}
     USERS_TABLE: ${self:service}-users-${self:provider.stage}
@@ -65,6 +81,15 @@ provider:
             - s3:PutObject
           Resource:
             - "arn:aws:s3:::snapitsoftware-ses-emails/*"
+        - Effect: Allow
+          Action:
+            - cloudwatch:PutMetricData
+          Resource: "*"
+        - Effect: Allow
+          Action:
+            - sns:Publish
+          Resource:
+            - "arn:aws:sns:${self:provider.region}:*:snapit-forum-production-alerts"
 
 package:
   patterns:
@@ -332,15 +357,7 @@ functions:
       - http:
           path: users/me/username
           method: put
-          cors:
-            origin: '*'
-            headers:
-              - Content-Type
-              - X-Amz-Date
-              - Authorization
-              - X-Api-Key
-              - X-Amz-Security-Token
-            allowCredentials: true
+          cors: true
           authorizer:
             name: authorizer
             resultTtlInSeconds: 300
@@ -352,9 +369,6 @@ functions:
           path: users/check-username
           method: get
           cors: true
-          authorizer:
-            name: authorizer
-            resultTtlInSeconds: 300
 
   getPublicProfile:
     handler: src/handlers/users.getPublicProfile

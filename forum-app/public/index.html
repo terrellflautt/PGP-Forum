@@ -3,19 +3,93 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#4F46E5" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+    <!-- PWA Theme Colors -->
+    <meta name="theme-color" content="#ff006e" />
+    <meta name="msapplication-TileColor" content="#0a0012" />
+    <meta name="msapplication-config" content="%PUBLIC_URL%/browserconfig.xml" />
+
+    <!-- SEO & Description -->
     <meta
       name="description"
       content="SnapIT Forums - Zero-knowledge encrypted messaging and forums for whistleblowers, journalists, and privacy advocates. We literally cannot read your messages."
     />
     <meta name="keywords" content="encrypted messaging, whistleblower platform, anonymous forums, PGP encryption, privacy, secure communication" />
+
+    <!-- Open Graph / Social Media -->
     <meta property="og:title" content="SnapIT Forums - Speak Anonymously & Securely" />
     <meta property="og:description" content="Zero-knowledge encrypted messaging and forums. Build your own private community. We literally cannot read your messages." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://forum.snapitsoftware.com" />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <meta property="og:image" content="https://forum.snapitsoftware.com/logo512.png" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SnapIT Forums - Private & Encrypted" />
+    <meta name="twitter:description" content="Secure forums with end-to-end encryption" />
+    <meta name="twitter:image" content="https://forum.snapitsoftware.com/logo512.png" />
+
+    <!-- iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="SnapIT Forums" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" />
+    <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/logo512.png" />
+
+    <!-- PWA Manifest -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <!-- Standard Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="%PUBLIC_URL%/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="%PUBLIC_URL%/icon-512.png" />
+
+    <!-- Mobile Web App -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="SnapIT Forums" />
+
+    <!-- SEO Enhancements -->
+    <link rel="canonical" href="https://forum.snapitsoftware.com/" />
+
+    <!-- Preconnect to critical domains for faster loading -->
+    <link rel="preconnect" href="https://api.snapitsoftware.com" />
+    <link rel="preconnect" href="https://accounts.google.com" />
+    <link rel="dns-prefetch" href="https://js.stripe.com" />
+
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "SnapIT Forums",
+      "applicationCategory": "CommunicationApplication",
+      "operatingSystem": "Web Browser, iOS, Android",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "description": "Free tier with 1,500 users"
+      },
+      "description": "Zero-knowledge encrypted messaging and forums for whistleblowers, journalists, and privacy advocates. We literally cannot read your messages.",
+      "url": "https://forum.snapitsoftware.com",
+      "screenshot": "https://forum.snapitsoftware.com/logo512.png",
+      "featureList": [
+        "End-to-end PGP encryption (4096-bit)",
+        "Ephemeral messaging (auto-delete after 60 seconds)",
+        "Anonymous forums and messaging",
+        "Zero-knowledge architecture",
+        "Progressive Web App (PWA)",
+        "Works offline"
+      ],
+      "provider": {
+        "@type": "Organization",
+        "name": "SnapIT Software",
+        "url": "https://snapitsoftware.com"
+      }
+    }
+    </script>
+
     <title>SnapIT Forums - Zero-Knowledge Privacy Platform</title>
   </head>
   <body>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ff006e">
+    <title>Offline - SnapIT Forums</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #0a0012 0%, #1a0025 100%);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .offline-container {
+            text-align: center;
+            max-width: 500px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .offline-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #ff006e 0%, #ff4d94 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            box-shadow: 0 10px 40px rgba(255, 0, 110, 0.3);
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #ff006e 0%, #ff4d94 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        p {
+            font-size: 18px;
+            color: #a0a0a0;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .feature-list {
+            margin: 30px 0;
+            text-align: left;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin: 12px 0;
+            font-size: 16px;
+            color: #d0d0d0;
+        }
+
+        .feature-item::before {
+            content: '✓';
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ff006e 0%, #ff4d94 100%);
+            border-radius: 50%;
+            margin-right: 12px;
+            text-align: center;
+            line-height: 24px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .retry-button {
+            display: inline-block;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #ff006e 0%, #ff4d94 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(255, 0, 110, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .retry-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 0, 110, 0.4);
+        }
+
+        .retry-button:active {
+            transform: translateY(0);
+        }
+
+        .connection-status {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: rgba(255, 77, 148, 0.1);
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #ff4d94;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #ff006e;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .offline-icon {
+                width: 100px;
+                height: 100px;
+                font-size: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">
+            📡
+        </div>
+
+        <h1>You're Offline</h1>
+        <p>It looks like you've lost your internet connection.</p>
+        <p>Don't worry, your encrypted data is safe and secure.</p>
+
+        <div class="feature-list">
+            <div class="feature-item">
+                View cached forums and messages
+            </div>
+            <div class="feature-item">
+                Browse previously loaded threads
+            </div>
+            <div class="feature-item">
+                Compose messages (sent when online)
+            </div>
+            <div class="feature-item">
+                All data syncs when reconnected
+            </div>
+        </div>
+
+        <button class="retry-button" onclick="window.location.reload()">
+            Try Again
+        </button>
+
+        <div class="connection-status">
+            <div class="status-dot"></div>
+            <span>Waiting for connection...</span>
+        </div>
+    </div>
+
+    <script>
+        // Auto-reload when connection is restored
+        window.addEventListener('online', function() {
+            console.log('Connection restored! Reloading...');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        });
+
+        // Update status indicator
+        function updateConnectionStatus() {
+            const statusElement = document.querySelector('.connection-status span');
+            const statusDot = document.querySelector('.status-dot');
+
+            if (navigator.onLine) {
+                statusElement.textContent = 'Connection restored!';
+                statusDot.style.background = '#00ff88';
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } else {
+                statusElement.textContent = 'Waiting for connection...';
+                statusDot.style.background = '#ff006e';
+            }
+        }
+
+        // Check connection status every 3 seconds
+        setInterval(updateConnectionStatus, 3000);
+        updateConnectionStatus();
+    </script>
+</body>
+</html>

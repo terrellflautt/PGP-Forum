@@ -1,26 +1,105 @@
 {
+  "name": "SnapIT Forums - Private & Encrypted",
   "short_name": "SnapIT Forums",
-  "name": "SnapIT Forums - Zero-Knowledge Privacy Platform",
-  "description": "Encrypted messaging and forums for whistleblowers, journalists, and privacy advocates",
+  "description": "Secure, private forums and messaging with end-to-end encryption. Zero-knowledge privacy for whistleblowers, journalists, and privacy advocates.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0a0012",
+  "theme_color": "#ff006e",
+  "orientation": "portrait-primary",
+  "dir": "ltr",
+  "lang": "en-US",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "/favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "/logo192.png",
+      "sizes": "192x192",
       "type": "image/png",
-      "sizes": "192x192"
+      "purpose": "any maskable"
     },
     {
-      "src": "logo512.png",
+      "src": "/logo512.png",
+      "sizes": "512x512",
       "type": "image/png",
-      "sizes": "512x512"
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#4F46E5",
-  "background_color": "#1e293b"
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "640x1136",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "SnapIT Forums - Mobile View"
+    },
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "SnapIT Forums - Desktop View"
+    }
+  ],
+  "categories": ["social", "productivity", "security"],
+  "shortcuts": [
+    {
+      "name": "New Forum",
+      "short_name": "New Forum",
+      "url": "/forums/new",
+      "description": "Create a new private forum",
+      "icons": [
+        {
+          "src": "/logo192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "short_name": "Messages",
+      "url": "/messages",
+      "description": "View your encrypted messages",
+      "icons": [
+        {
+          "src": "/logo192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Settings",
+      "short_name": "Settings",
+      "url": "/settings",
+      "description": "Manage your account settings",
+      "icons": [
+        {
+          "src": "/logo192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "iarc_rating_id": ""
 }
