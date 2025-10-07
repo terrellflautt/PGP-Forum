@@ -1,11 +1,63 @@
+# Dependencies
 node_modules/
-.env
-.env.*
-.serverless/
-*.log
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Production builds
+/build
+/dist
+/out
+.next/
+
+# Misc
 .DS_Store
+*.pem
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Local env files
+.env
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Serverless
+.serverless/
+.serverless_plugins/
+
+# IDE
 .idea/
 .vscode/
-dist/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# AWS
 .aws-sam/
-STRIPE-LIVE-KEYS.md
+
+# Secrets - NEVER COMMIT
+*.key
+*.pem
+credentials.json
+config/secrets.js
+secrets/
+
+# Build artifacts
+*.zip
+*.tar.gz
+
+# Logs
+*.log
+logs/
